@@ -1,6 +1,6 @@
 from copy import deepcopy
 from datetime import datetime, timedelta
-from .sqlite_requests import (db_insert_data, db_creator, db_get_data, db_get_data_for_time,
+from .sqlite_requests import (db_insert_data, db_creator, db_get_data, db_get_all_data,
                               db_update_data, db_get_sorted, db_check_columns, db_delete_data)
 
 DATABASE = 'database.db'
@@ -12,9 +12,20 @@ class AsyncDatabaseObject:
         self.primary_key = primary_key
         self.data_record = data_record
         self.data_insert = data_insert
-        self._data_for_time = None
         self._static_data = None
         self._data = None
+
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def __next__(self):
+        if self._iter_index < len(self._data):
+            result = self._data[self._iter_index]
+            self._iter_index += 1
+            return result
+        else:
+            raise StopIteration
 
     def __create_table(self, columns: list) -> bool:
         with db_creator.DatabaseCreator(DATABASE) as db:
@@ -32,14 +43,14 @@ class AsyncDatabaseObject:
         if not result:
             self.__check_columns_for_changes(columns)
 
-    async def load_data(self, get_columns='*', condition_data: dict = None, time_in_minutes: int = None,
-                        create: bool = True) -> bool:
+    async def load_data(self, get_columns='*', condition_data: dict = None, create: bool = True,
+                        get_all: bool = False) -> bool:
         if not condition_data:
             condition_data = self.data_record
         if not get_columns:
             get_columns = tuple([self.primary_key])
 
-        if not time_in_minutes:
+        if not get_all:
             async with db_get_data.AsyncGetData(DATABASE) as db:
                 result = await db.get_data(self.table_name, condition_data, get_columns)
 
@@ -54,13 +65,9 @@ class AsyncDatabaseObject:
                 self._static_data = deepcopy(result[0])
 
         else:
-            today = datetime.now()
-            seven_days_ago = today - timedelta(minutes=time_in_minutes)
-            time_range = ('date', seven_days_ago.strftime('%Y-%m-%d %H:%M:%S'), today.strftime('%Y-%m-%d %H:%M:%S'))
-
-            async with db_get_data_for_time.AsyncGetDataForTime(DATABASE) as db:
-                result = await db.get_data_for_time(self.table_name, condition_data, time_range, get_columns)
-                self._data = result
+            async with db_get_all_data.AsyncGetAllData(DATABASE) as db:
+                result = await db.get_all_data(self.table_name, get_columns)
+                self._data = self.get_objects_from_tuple(data=result)
 
         if result:
             return True
@@ -98,3 +105,7 @@ class AsyncDatabaseObject:
     async def get_sorted(self, condition_where: str, order_by: str, limit: int, get_column: str):
         async with db_get_sorted.AsyncGetSorted(DATABASE) as db:
             return await db.get_sorted(self.table_name, condition_where, order_by, limit, get_column)
+
+    @staticmethod
+    def get_objects_from_tuple(data: tuple[dict]) -> list:
+        return list()

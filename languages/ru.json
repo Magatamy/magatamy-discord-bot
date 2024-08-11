@@ -1,7 +1,12 @@
 {
     "slash_commands": {
         "create_private_channel_name": "создать-приватку",
-        "create_private_channel_description": "Создает категорию для приватных каналов"
+        "create_private_channel_description": "Создает категорию для приватных каналов",
+        "create_saturday_channel_name": "создать-субботник",
+        "create_saturday_channel_description": "Создает канал для субботника",
+        "create_saturday_channel_param_timezone_description": "Тайм зона по UTC",
+        "create_saturday_channel_param_hour_description": "Часы для старта субботника",
+        "create_saturday_channel_param_minute_description": "Минуты для старта субботника"
     },
     "static_text": {
         "private_category_name": "Приватные каналы",
@@ -133,6 +138,21 @@
     },
     "user_access_response": {
         "description": "Выберите пользователя из списка. После этого он не сможет заходить в ваш приватный голосовой канал."
+    },
+    "message_start_saturday": {
+        "title": "☀ Суббота стучится в двери, а значит пришло время скриншотного субботника!",
+        "description": "В этот день игроки могут продемонстрировать свой еженедельный прогресс сообществу нашего сервера\n\nДелимся наработками своих проектов!",
+        "image": "https://cdn.discordapp.com/attachments/1242813453232640120/1242818090769711134/1464_20240210175106.png?ex=66ba018b&is=66b8b00b&hm=9d7f01d3d256d2dc197ff9931c4087834966d72eb5f91df0b9cdf4c249e4bddf&",
+        "color": "0x98F5F9"
+    },
+    "message_end_saturday": {
+        "title": "☀ Суббота окончился!",
+        "description": "Встретимся в следующую субботу и посмотрим на ваши проекты.",
+        "color": "0x98F5F9"
+    },
+    "create_saturday_channel": {
+        "title": "Канал для субботника готов!",
+        "description": "- Вы можете переименовать канал.\n- Вы можете переместить канал.\n- Вы можете изменять параметры канала."
     },
     "create_private_channel": {
         "title": "Категория приватных каналов почти готова!",
