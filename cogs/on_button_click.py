@@ -46,8 +46,7 @@ class OnButtonClick(commands.Cog):
             return
 
         response = language.get_embed_data('user_access_response')
-        view = MenuViewUserAccess(
-            users=inter.guild.members, channel_id=inter.author.voice.channel.id, language=language)
+        view = MenuViewUserAccess(channel_id=inter.author.voice.channel.id, language=language)
 
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True, view=view)
 
@@ -72,8 +71,7 @@ class OnButtonClick(commands.Cog):
             return
 
         response = language.get_embed_data('mute_user_response')
-        view = MenuViewMuteUser(
-            users=inter.author.voice.channel.members, channel_id=inter.author.voice.channel.id, language=language)
+        view = MenuViewMuteUser(channel_id=inter.author.voice.channel.id, language=language)
 
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True, view=view)
 
@@ -83,8 +81,7 @@ class OnButtonClick(commands.Cog):
             return
 
         response = language.get_embed_data('kick_user_response')
-        view = MenuViewKickUser(
-            users=inter.author.voice.channel.members, channel_id=inter.author.voice.channel.id, language=language)
+        view = MenuViewKickUser(channel_id=inter.author.voice.channel.id, language=language)
 
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True, view=view)
 
@@ -94,8 +91,7 @@ class OnButtonClick(commands.Cog):
             return
 
         response = language.get_embed_data('get_owner_response')
-        view = MenuViewGetOwner(
-            users=inter.author.voice.channel.members, channel_id=inter.author.voice.channel.id, language=language)
+        view = MenuViewGetOwner(channel_id=inter.author.voice.channel.id, language=language)
 
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True, view=view)
 
