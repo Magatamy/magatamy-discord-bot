@@ -1,4 +1,4 @@
-from disnake import MessageInteraction, InteractionResponse, Permissions
+from disnake import MessageInteraction, InteractionResponse, PermissionOverwrite
 from disnake.ext import commands
 
 from modules.generators import EmbedGenerator
@@ -18,6 +18,7 @@ class OnButtonClick(commands.Cog):
             ButtonID.NEW_LIMIT.value: self.new_limit,
             ButtonID.USER_ACCESS.value: self.user_access,
             ButtonID.CLOSE_OPEN_ROOM.value: self.open_close_room,
+            ButtonID.HIDE_SHOW_ROOM.value: self.hide_show_room,
             ButtonID.MUTE_USER.value: self.mute_user,
             ButtonID.KICK_USER.value: self.kick_user,
             ButtonID.GET_OWNER.value: self.get_owner
@@ -55,14 +56,31 @@ class OnButtonClick(commands.Cog):
         if not private_channel:
             return
 
-        permissions: Permissions = inter.author.voice.channel.permissions_for(inter.guild.default_role)
-        if permissions.connect:
+        overwrite = inter.author.voice.channel.overwrites_for(inter.guild.default_role)
+        if overwrite.connect is None:
             response = language.get_embed_data('close_room_response')
-            await inter.author.voice.channel.set_permissions(target=inter.guild.default_role, connect=False)
+            overwrite.connect = False
         else:
             response = language.get_embed_data('open_room_response')
-            await inter.author.voice.channel.set_permissions(target=inter.guild.default_role, connect=None)
+            overwrite.connect = None
 
+        await inter.author.voice.channel.set_permissions(target=inter.guild.default_role, overwrite=overwrite)
+        await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
+
+    async def hide_show_room(self, inter: MessageInteraction, language: LanguageManager):
+        private_channel = await self.check_and_get_private(inter=inter, language=language)
+        if not private_channel:
+            return
+
+        overwrite = inter.author.voice.channel.overwrites_for(inter.guild.default_role)
+        if overwrite.view_channel is None:
+            response = language.get_embed_data('hide_room_response')
+            overwrite.view_channel = False
+        else:
+            response = language.get_embed_data('show_room_response')
+            overwrite.view_channel = None
+
+        await inter.author.voice.channel.set_permissions(target=inter.guild.default_role, overwrite=overwrite)
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
 
     async def mute_user(self, inter: MessageInteraction, language: LanguageManager):

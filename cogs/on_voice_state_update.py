@@ -11,7 +11,7 @@ from modules.managers import LanguageManager
 class OnVoiceStateUpdate(commands.Cog):
     @commands.Cog.listener()
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState):
-        if before.channel:
+        if before.channel and before.channel != after.channel:
             private_channel = PrivateChannelsTable(channel_id=before.channel.id)
             if await private_channel.load_data(create=False):
                 if not before.channel.members:

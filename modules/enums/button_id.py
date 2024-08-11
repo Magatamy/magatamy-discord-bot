@@ -9,3 +9,4 @@ class ButtonID(Enum):
     MUTE_USER = "b-4"
     KICK_USER = "b-5"
     GET_OWNER = "b-6"
+    HIDE_SHOW_ROOM = "b-7"
