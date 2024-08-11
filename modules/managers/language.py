@@ -25,40 +25,46 @@ class Localized(disnake.Localized):
 
         super().__init__(string=string, data=translations)
 
+    @staticmethod
+    def load_all_language_data() -> dict:
+        data = {}
+        for filename in os.listdir('languages'):
+            lang_name, ext = os.path.splitext(filename)
+            locale_path = f'languages/{filename}'
+            with open(locale_path, encoding='utf-8') as file:
+                json_data = json.loads(file.read())
+            data.update({lang_name: json_data})
 
-class LanguageManager:
-    def __init__(self, locale):
-        self.locale = locale
-
-    async def get_slash_commands_name(self, slash_command_key: str) -> str:
-        json_data = await self._get_json_data(key='slash_commands')
-        return json_data.get(slash_command_key, '')
-
-    async def get_embed_data(self, json_key: str) -> dict:
-        return await self._get_json_data(key=json_key)
-
-    async def get_image_data(self, image_key: str, *args, **kwargs) -> dict:
-        json_data = await self._get_json_data(key='image_data')
-        data = json_data.get(image_key, {})
-
-        for key in data:
-            value = data[key]
-            if isinstance(value, str):
-                data[key] = value.format(*args, **kwargs)
         return data
 
-    async def _get_json_data(self, key: str = None) -> dict:
-        locale_path = f'languages/{self.locale}.json'
-        default_path = f'languages/{LANGUAGES_DEFAULT}.json'
 
-        try:
-            async with aiofiles.open(locale_path, encoding='utf-8-sig') as file:
-                json_data = json.loads(await file.read())
-        except FileNotFoundError:
-            async with aiofiles.open(default_path, encoding='utf-8-sig') as file:
-                json_data = json.loads(await file.read())
+LANGUAGES_DATA = Localized.load_all_language_data()
 
-        if key:
-            return json_data.get(key, {})
-        else:
-            return json_data
+
+class LanguageManager:
+    def __init__(self, locale: disnake.Locale):
+        self.locale = locale
+        self._data = self._load_json_data()
+
+    def get_slash_commands_name(self, slash_command_key: str | list) -> str | list:
+        language_data = self._data.get('slash_commands')
+        if isinstance(slash_command_key, list):
+            return [language_data.get(key, '') for key in slash_command_key]
+        return language_data.get(slash_command_key, '')
+
+    def get_static(self, text_key: str | list) -> str | list:
+        language_data = self._data.get('static_text')
+        if isinstance(text_key, list):
+            return [language_data.get(key, '') for key in text_key]
+        return language_data.get(text_key, '')
+
+    def get_embed_data(self, json_key: str | list) -> dict | list:
+        if isinstance(json_key, list):
+            return [self._data.get(key) for key in json_key]
+        return self._data.get(json_key)
+
+    def _load_json_data(self) -> dict:
+        language_data = LANGUAGES_DATA.get(self.locale)
+        if not language_data:
+            language_data = LANGUAGES_DATA.get(LANGUAGES_DEFAULT)
+        return language_data

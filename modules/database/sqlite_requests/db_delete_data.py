@@ -1,22 +1,21 @@
 import aiosqlite
 
 
-class AsyncGetData:
+class AsyncDeleteData:
     def __init__(self, db_name: str):
         self.db_name = db_name
         self.connection = None
 
-    async def get_data(self, table_name: str, condition_data: dict, get_columns: str | tuple) -> tuple:
+    async def delete_data(self, table_name: str, condition_data: dict) -> bool:
         async with self.connection.cursor() as cursor:
-            check_columns = ' AND '.join(f'{key} = ?' for key in condition_data.keys())
-            if type(get_columns) is tuple:
-                get_columns = ', '.join(get_columns)
+            conditions = " AND ".join([f"{key} = ?" for key in condition_data.keys()])
+            query = f"DELETE FROM {table_name} WHERE {conditions}"
 
-            query = f'SELECT {get_columns} FROM {table_name} WHERE {check_columns}'
             await cursor.execute(query, tuple(condition_data.values()))
-            result = await cursor.fetchall()
+            await self.connection.commit()
+            result = cursor.rowcount > 0
 
-            return tuple({cursor.description[i][0]: value for i, value in enumerate(record)} for record in result)
+            return result
 
     async def __connect(self):
         self.connection = await aiosqlite.connect(self.db_name)

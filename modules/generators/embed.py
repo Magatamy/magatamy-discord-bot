@@ -22,7 +22,7 @@ class EmbedGenerator(Embed):
     def __init__(self, json_schema: dict, *args, **kwargs):
         super().__init__(title=json_schema.get('title', '').format(*args, **kwargs),
                          description=json_schema.get('description', '').format(*args, **kwargs),
-                         color=int(json_schema.get('color', '0xffffff').format(*args, **kwargs), 16))
+                         color=int(json_schema.get('color', '0x000000').format(*args, **kwargs), 16))
         self.set_author(icon_url=json_schema.get('author_icon_url', '').format(*args, **kwargs),
                         url=json_schema.get('author_url', '').format(*args, **kwargs),
                         name=json_schema.get('author_name', '').format(*args, **kwargs))

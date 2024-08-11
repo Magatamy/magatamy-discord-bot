@@ -1,3 +1,189 @@
 {
-    "slash_commands": {}
+    "slash_commands": {
+        "create_private_channel_name": "создать-приватку",
+        "create_private_channel_description": "Создает категорию для приватных каналов"
+    },
+    "static_text": {
+        "private_category_name": "Приватные каналы",
+        "private_text_channel_name": "\uD83D\uDCDC・управление",
+        "private_voice_channel_name": "\uD83D\uDCE6・Создать",
+        "placeholder_menu_kick_user": "Выберите пользователя чтобы выгнать",
+        "placeholder_menu_get_user": "Выберите нового владельца",
+        "placeholder_menu_mute_user": "Выберите пользователя чтобы замутить",
+        "placeholder_menu_user_access": "Выберите пользователя для блокировки",
+        "modal_title_change_limit": "Изменение лимита",
+        "modal_label_change_limit": "Напишите нужный лимит",
+        "modal_placeholder_change_limit": "от 1 до 99 (0 - бесконечно)",
+        "modal_title_change_name": "Изменение названия",
+        "modal_label_change_name": "Напишите имя для комнаты",
+        "modal_placeholder_change_name": "Говорилка..."
+    },
+    "error_private_not_in_voice": {
+        "description": "Вы должны находиться в голосовом канале, чтобы использовать панель управления!",
+        "color": "0xff0000"
+    },
+    "error_private_not_in_private": {
+        "description": "Вы должны находиться в приватном голосовом канале, чтобы использовать панель управления!",
+        "color": "0xff0000"
+    },
+    "error_private_not_is_owner": {
+        "description": "Вы должны быть владельцем приватного голосового канала, чтобы использовать панель управления!",
+        "color": "0xff0000"
+    },
+    "error_private_menu_not_in_voice": {
+        "description": "Пользователь не находиться в голосовом канале!",
+        "color": "0xff0000"
+    },
+    "error_private_menu_not_in_private": {
+        "description": "Пользователь не находиться в вашем приватном голосовом канале!",
+        "color": "0xff0000"
+    },
+    "error_private_kick_owner": {
+        "description": "Владельца приватной комнаты нельзя выгнать!",
+        "color": "0xff0000"
+    },
+    "error_private_author_not_owner": {
+        "description": "Вы уже не являетесь владельцом приватного голосового канала!",
+        "color": "0xff0000"
+    },
+    "error_private_access_owner": {
+        "description": "Вы не можете забрать доступ к приватному голосовому каналу у владельца!",
+        "color": "0xff0000"
+    },
+    "error_private_not_exist": {
+        "description": "Данной приватного голосового канала уже не существует!",
+        "color": "0xff0000"
+    },
+    "error_channel_not_is_owner": {
+        "description": "Вы не являетесь владельцем приватного голосового канала!",
+        "color": "0xff0000"
+    },
+    "error_private_get_owner": {
+        "description": "Вы уже являетесь владельцем канала!",
+        "color": "0xff0000"
+    },
+    "error_private_mute_owner": {
+        "description": "У владельца приватной комнаты нельзя забрать право говорить!",
+        "color": "0xff0000"
+    },
+    "error_change_limit_value": {
+        "description": "Вы указали не верное значение лимита!",
+        "color": "0xff0000"
+    },
+    "private_kick_member": {
+        "description": "{member} был выгнан из голосового канала.",
+        "color": "0x66cdaa"
+    },
+    "private_mute_member": {
+        "description": "{member} больше не может говорить в вашем приватном голосовом канале.",
+        "color": "0x66cdaa"
+    },
+    "private_unmute_member": {
+        "description": "{member} теперь может говорить в вашем приватном голосовом канале.",
+        "color": "0x66cdaa"
+    },
+    "private_get_owner_member": {
+        "description": "Вы сделали {member} новым владельцем приватного голосового канала.",
+        "color": "0x66cdaa"
+    },
+    "private_give_access_member": {
+        "description": "Вы вернули у {member} доступ к приватному голосовому каналу.",
+        "color": "0x66cdaa"
+    },
+    "private_back_access_member": {
+        "description": "Вы забрали у {member} доступ к приватному голосовому каналу.",
+        "color": "0x66cdaa"
+    },
+    "close_room_response": {
+        "description": "Приватная комната **закрыта** для всех.",
+        "color": "0x66cdaa"
+    },
+    "open_room_response": {
+        "description": "Приватная комната **открыта** для всех.",
+        "color": "0x66cdaa"
+    },
+    "change_name_response": {
+        "description": "Название приватного голосового канала изменено на **{name}**",
+        "color": "0x66cdaa"
+    },
+    "change_limit_response": {
+        "description": "Лимит приватного голосового канала изменено на **{limit}**",
+        "color": "0x66cdaa"
+    },
+    "get_owner_response": {
+        "description": "Выберите пользователя из списка присутствующих в приватном голосовом канале. После этого он станет новым владельцом.",
+        "color": "0x66cdaa"
+    },
+    "kick_user_response": {
+        "description": "Выберите пользователя из списка присутствующих в приватном голосовом канале. После этого он будет выгнан."
+    },
+    "mute_user_response": {
+        "description": "Выберите пользователя из списка. После этого он не сможет говорить в приватном голосовом канале."
+    },
+    "private_new_owner": {
+        "description": "{member} становиться новым владельцем этого приватного голосового канала."
+    },
+    "user_access_response": {
+        "description": "Выберите пользователя из списка. После этого он не сможет заходить в ваш приватный голосовой канал."
+    },
+    "create_private_channel": {
+        "title": "Категория приватных каналов готова!",
+        "description": "- Вы можете переименовать каналы.\n- Вы можете перемещать каналы или категорию.\n- Вы можете изменять параметры каналов."
+    },
+    "private_channel_setting": {
+        "title": "Управление приватной комнатой",
+        "description": "- Жми следующие кнопки, чтобы настроить комнату.\n- Использовать их можно только когда у вас есть приватный канал.",
+        "fields": [
+            {
+            "name": "",
+            "value": "<:pen:1272121455148273715> — `Изменить название комнаты`",
+            "inline": true
+            },
+            {
+            "name": "",
+            "value": "",
+            "inline": true
+            },
+            {
+            "name": "",
+            "value": "<:user:1272121477927276567> — `Забрать доступ в комнату`",
+            "inline": true
+            },
+            {
+            "name": "",
+            "value": "<:usersalt1:1272121490028105728> — `Задать новый лимит`",
+            "inline": true
+            },
+            {
+            "name": "",
+            "value": "",
+            "inline": true
+            },
+            {
+            "name": "",
+            "value": "<:lock:1272121501302132807> — `Закрыть/Открыть комнату`",
+            "inline": true
+            },
+            {
+            "name": "",
+            "value": "<:microfon:1272121527198023680> — `Выдать право говорить`",
+            "inline": true
+            },
+            {
+            "name": "",
+            "value": "",
+            "inline": true
+            },
+            {
+            "name": "",
+            "value": "<:trash:1272121466355187752> — `Выгнать пользователя`",
+            "inline": true
+            },
+            {
+            "name": "",
+            "value": "<:vip:1272121516108021791> — `Передать владение комнатой`",
+            "inline": true
+            }
+        ]
+    }
 }

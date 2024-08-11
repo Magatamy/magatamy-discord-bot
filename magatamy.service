@@ -1,0 +1,13 @@
+[Unit]
+Description=Magatamy Bot
+After=network.target
+
+[Service]
+WorkingDirectory=/home/magatamy-bot
+User=root
+Group=root
+Restart=always
+ExecStart=/usr/bin/screen -DmS Magatamy /home/magatamy-bot/venv/bin/python3 ./main.py
+
+[Install]
+WantedBy=multi-user.target
