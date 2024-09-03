@@ -17,7 +17,9 @@
         "anti_nuke_kick_protection_name": "кик-защита",
         "anti_nuke_kick_protection_description": "Блокирует пользователя при масовом кике",
         "anti_nuke_kick_protection_count_description": "Количество доступных киков за период времени",
-        "anti_nuke_kick_protection_time_description": "Промежуток времени в секундах, для ограниченого кика пользователей"
+        "anti_nuke_kick_protection_time_description": "Промежуток времени в секундах, для ограниченого кика пользователей",
+        "anti_nuke_log_channel_name": "лог-канал",
+        "anti_nuke_log_channel_description": "Канал для логов антинюка"
     },
     "static_text": {
         "private_category_name": "Приватные каналы",
@@ -189,6 +191,10 @@
         "description": "Эта роль уже установлена для блокировки!",
         "color": "0xff0000"
     },
+    "anti_nuke_log_channel_error": {
+        "description": "Этот канал уже установлен для логов антинюка!",
+        "color": "0xff0000"
+    },
     "anti_nuke_block_role": {
         "description": "Роль для блокировки успешно установлена",
         "color": "0x66cdaa"
@@ -199,6 +205,26 @@
     },
     "anti_nuke_kick_protection": {
         "description": "Защита от киков установлена! При {count} киков от пользователя в течении {time} секунд, заблокирует пользователя.",
+        "color": "0x66cdaa"
+    },
+    "anti_nuke_log_channel": {
+        "description": "Канал для логов антинюка успешно установлен",
+        "color": "0x66cdaa"
+    },
+    "anti_nuke_ban_blocked": {
+        "description": "Вы были заблокированы за многочисленые **баны** на сервере!",
+        "color": "0x66cdaa"
+    },
+    "anti_nuke_kick_blocked": {
+        "description": "Вы были заблокированы за многочисленые **кики** на сервере!",
+        "color": "0x66cdaa"
+    },
+    "anti_nuke_ban_blocked_log": {
+        "description": "`{user}({user_id})` был заблокирован за многочисленые **баны** на сервере",
+        "color": "0x66cdaa"
+    },
+    "anti_nuke_kick_blocked_log": {
+        "description": "`{user}({user_id})` был заблокирован за многочисленые **кики** на сервере",
         "color": "0x66cdaa"
     }
 }

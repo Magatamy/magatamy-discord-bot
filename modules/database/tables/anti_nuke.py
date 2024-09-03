@@ -7,6 +7,7 @@ TABLE_NAME = 'anti_nuke'
 class AntiNukeTable(AsyncDatabaseObject):
     __guild_id_attribute = 'guild_id'
     __block_role_id_attribute = 'block_role_id'
+    __log_channel_id_attribute = 'log_channel_id'
     __timeout_for_ban_attribute = 'timeout_for_ban'
     __ban_protection_count_attribute = 'ban_protection_count'
     __timeout_for_kick_attribute = 'timeout_for_kick'
@@ -23,6 +24,14 @@ class AntiNukeTable(AsyncDatabaseObject):
     @block_role_id.setter
     def block_role_id(self, value):
         self._data[self.__block_role_id_attribute] = value
+
+    @property
+    def log_channel_id(self) -> int:
+        return self._data.get(self.__log_channel_id_attribute)
+
+    @log_channel_id.setter
+    def log_channel_id(self, value):
+        self._data[self.__log_channel_id_attribute] = value
 
     @property
     def timeout_for_ban(self) -> time:
@@ -62,6 +71,7 @@ class AntiNukeTable(AsyncDatabaseObject):
     def columns(self) -> list:
         return [
             (self.__block_role_id_attribute, 'INTEGER', 'NULL'),
+            (self.__log_channel_id_attribute, 'INTEGER', 'NULL'),
             (self.__timeout_for_ban_attribute, 'DATE', 'NULL'),
             (self.__ban_protection_count_attribute, 'INTEGER', 'NULL'),
             (self.__timeout_for_kick_attribute, 'DATE', 'NULL'),

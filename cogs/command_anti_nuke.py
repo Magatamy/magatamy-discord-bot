@@ -1,5 +1,5 @@
-from datetime import time as datetime
-from disnake import ApplicationCommandInteraction, Role
+from datetime import timedelta, datetime
+from disnake import ApplicationCommandInteraction, Role, TextChannel
 from disnake.ext import commands
 
 from modules.managers import Localized, LanguageManager
@@ -17,6 +17,8 @@ KICK_PROTECTION_NAME = Localized('anti_nuke_kick_protection_name')
 KICK_PROTECTION_DESCRIPTION = Localized('anti_nuke_kick_protection_description')
 KICK_PROTECTION_COUNT_DESCRIPTION = Localized('anti_nuke_kick_protection_count_description')
 KICK_PROTECTION_TIME_DESCRIPTION = Localized('anti_nuke_kick_protection_time_description')
+LOG_CHANNEL_NAME = Localized('anti_nuke_log_channel_name')
+LOG_CHANNEL_DESCRIPTION = Localized('anti_nuke_log_channel_description')
 
 
 class AntiNuke(commands.Cog):
@@ -28,6 +30,21 @@ class AntiNuke(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def anti_nuke(self, inter: ApplicationCommandInteraction):
         pass
+
+    @anti_nuke.sub_command(name=LOG_CHANNEL_NAME, description=LOG_CHANNEL_DESCRIPTION)
+    async def log_channel(self, inter: ApplicationCommandInteraction, channel: TextChannel):
+        language = LanguageManager(locale=inter.guild_locale)
+        anti_nuke = AntiNukeTable(guild_id=inter.guild.id)
+        await anti_nuke.load()
+
+        if anti_nuke.log_channel_id == channel.id:
+            response = language.get_embed_data(json_key='anti_nuke_log_channel_error')
+        else:
+            response = language.get_embed_data(json_key='anti_nuke_log_channel')
+            anti_nuke.log_channel_id = channel.id
+            await anti_nuke.update()
+
+        await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
 
     @anti_nuke.sub_command(name=BLOCK_ROLE_NAME, description=BLOCK_ROLE_DESCRIPTION)
     async def block_role(self, inter: ApplicationCommandInteraction, role: Role):
@@ -54,7 +71,7 @@ class AntiNuke(commands.Cog):
         language = LanguageManager(locale=inter.guild_locale)
         anti_nuke = AntiNukeTable(guild_id=inter.guild.id)
         await anti_nuke.load()
-        anti_nuke.timeout_for_ban = datetime(second=time)
+        anti_nuke.timeout_for_ban = timedelta(seconds=time) + datetime(1, 1, 1)
         anti_nuke.ban_protection_count = count
         await anti_nuke.update()
 
@@ -72,7 +89,7 @@ class AntiNuke(commands.Cog):
         language = LanguageManager(locale=inter.guild_locale)
         anti_nuke = AntiNukeTable(guild_id=inter.guild.id)
         await anti_nuke.load()
-        anti_nuke.timeout_for_kick = datetime(second=time)
+        anti_nuke.timeout_for_kick = timedelta(seconds=time) + datetime(1, 1, 1)
         anti_nuke.kick_protection_count = count
         await anti_nuke.update()
 
