@@ -9,7 +9,15 @@
         "create_saturday_channel_param_minute_description": "Минуты для старта субботника",
         "anti_nuke_name": "антинюк",
         "anti_nuke_block_role_name": "роль-блокировки",
-        "anti_nuke_block_role_description": "Выставить роль для блокировки нарушителей"
+        "anti_nuke_block_role_description": "Выставить роль для блокировки нарушителей",
+        "anti_nuke_ban_protection_name": "бан-защита",
+        "anti_nuke_ban_protection_description": "Блокирует пользователя при масовом бане",
+        "anti_nuke_ban_protection_count_description": "Количество доступных банов за период времени",
+        "anti_nuke_ban_protection_time_description": "Промежуток времени в секундах, для ограниченого бана пользователей",
+        "anti_nuke_kick_protection_name": "кик-защита",
+        "anti_nuke_kick_protection_description": "Блокирует пользователя при масовом кике",
+        "anti_nuke_kick_protection_count_description": "Количество доступных киков за период времени",
+        "anti_nuke_kick_protection_time_description": "Промежуток времени в секундах, для ограниченого кика пользователей"
     },
     "static_text": {
         "private_category_name": "Приватные каналы",
@@ -167,62 +175,12 @@
         "fields": [
             {
             "name": "",
-            "value": "<:pen:1272121455148273715> — `Изменить название комнаты`",
+            "value": "<:pen:1272121455148273715> — `Изменить название комнаты`\n<:usersalt1:1272121490028105728> — `Задать новый лимит`\n<:trash:1272121466355187752> — `Выгнать пользователя`\n<:vip:1272121516108021791> — `Передать владение`",
             "inline": true
             },
             {
             "name": "",
-            "value": "",
-            "inline": true
-            },
-            {
-            "name": "",
-            "value": "<:user:1272121477927276567> — `Забрать/Выдать доступ`",
-            "inline": true
-            },
-            {
-            "name": "",
-            "value": "<:usersalt1:1272121490028105728> — `Задать новый лимит`",
-            "inline": true
-            },
-            {
-            "name": "",
-            "value": "",
-            "inline": true
-            },
-            {
-            "name": "",
-            "value": "<:lock:1272121501302132807> — `Закрыть/Открыть комнату`",
-            "inline": true
-            },
-            {
-            "name": "",
-            "value": "<:microfon:1272121527198023680> — `Выдать/Забрать голос`",
-            "inline": true
-            },
-            {
-            "name": "",
-            "value": "",
-            "inline": true
-            },
-            {
-            "name": "",
-            "value": "<:eye:1272121436974354455> — `Спрятать/Показать комнату`",
-            "inline": true
-            },
-            {
-            "name": "",
-            "value": "<:trash:1272121466355187752> — `Выгнать пользователя`",
-            "inline": true
-            },
-            {
-            "name": "",
-            "value": "",
-            "inline": true
-            },
-            {
-            "name": "",
-            "value": "<:vip:1272121516108021791> — `Передать владение`",
+            "value": "<:user:1272121477927276567> — `Забрать/Выдать доступ`\n<:lock:1272121501302132807> — `Закрыть/Открыть комнату`\n<:microfon:1272121527198023680> — `Выдать/Забрать голос`\n<:eye:1272121436974354455> — `Спрятать/Показать комнату`",
             "inline": true
             }
         ]
@@ -233,6 +191,14 @@
     },
     "anti_nuke_block_role": {
         "description": "Роль для блокировки успешно установлена",
+        "color": "0x66cdaa"
+    },
+    "anti_nuke_ban_protection": {
+        "description": "Защита от банов установлена! При {count} банов от пользователя в течении {time} секунд, заблокирует пользователя.",
+        "color": "0x66cdaa"
+    },
+    "anti_nuke_kick_protection": {
+        "description": "Защита от киков установлена! При {count} киков от пользователя в течении {time} секунд, заблокирует пользователя.",
         "color": "0x66cdaa"
     }
 }

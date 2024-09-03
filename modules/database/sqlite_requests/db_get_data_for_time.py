@@ -1,5 +1,7 @@
 import aiosqlite
 
+from datetime import datetime, time, timedelta
+
 
 class AsyncGetDataForTime:
     def __init__(self, db_name: str):
@@ -7,19 +9,26 @@ class AsyncGetDataForTime:
         self.connection = None
         self.connection = None
 
-    async def get_data_for_time(self, table_name: str, condition_data: dict,
-                                time_range: tuple, get_columns: str | tuple) -> tuple:
+    async def get_data_for_time(self, table_name: str, condition_data: dict, time_range: time,
+                                get_columns: str | tuple, time_column: str) -> tuple:
         async with self.connection.cursor() as cursor:
-            if type(get_columns) is tuple:
+            if isinstance(get_columns, tuple):
                 get_columns = ', '.join(get_columns)
+
+            duration = timedelta(hours=time_range.hour, minutes=time_range.minute, seconds=time_range.second)
+            current_time = datetime.now()
+            start_time = current_time - duration
+            end_time = current_time
+
             conditions = " AND ".join([f"{key} = ?" for key in condition_data.keys()])
             query = f"""
                 SELECT {get_columns} 
                 FROM {table_name}
                 WHERE {conditions}
-                AND {time_range[0]} BETWEEN ? AND ?
+                AND {time_column} BETWEEN ? AND ?
             """
-            params = list(condition_data.values()) + [time_range[1], time_range[2]]
+            params = list(condition_data.values()) + [start_time, end_time]
+
             await cursor.execute(query, params)
             return tuple(await cursor.fetchall())
 

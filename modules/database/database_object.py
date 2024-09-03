@@ -1,6 +1,6 @@
 from copy import deepcopy
-from datetime import datetime, timedelta
-from .sqlite_requests import (db_insert_data, db_creator, db_get_data, db_get_all_data,
+from datetime import time
+from .sqlite_requests import (db_insert_data, db_creator, db_get_data, db_get_all_data, db_get_data_for_time,
                               db_update_data, db_get_sorted, db_check_columns, db_delete_data)
 
 DATABASE = 'database.db'
@@ -72,6 +72,21 @@ class AsyncDatabaseObject:
 
         async with db_get_all_data.AsyncGetAllData(DATABASE) as db:
             result = await db.get_all_data(self.table_name, get_columns)
+            self._data = self.get_objects_from_tuple(data=result)
+
+        if result:
+            return True
+
+    async def load_for_time(self, time_column: str, condition_data: dict = None, time_range: time = None, get_columns='*') -> bool:
+        if not get_columns:
+            get_columns = tuple([self.primary_key])
+        if not condition_data:
+            condition_data = self.data_record
+        if not time_range:
+            time_range = time(hour=1)
+
+        async with db_get_data_for_time.AsyncGetDataForTime(DATABASE) as db:
+            result = await db.get_data_for_time(self.table_name, condition_data, time_range, get_columns, time_column)
             self._data = self.get_objects_from_tuple(data=result)
 
         if result:
