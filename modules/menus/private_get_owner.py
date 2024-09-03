@@ -16,7 +16,7 @@ class MenuKickUser(UserSelect):
         language = LanguageManager(locale=inter.guild_locale)
 
         private_channel = PrivateChannelsTable(channel_id=self.channel_id)
-        if not await private_channel.load_data(create=False):
+        if not await private_channel.load(create=False):
             error_response = language.get_embed_data('error_private_not_exist')
             await inter.response.send_message(embed=EmbedGenerator(json_schema=error_response), ephemeral=True)
             return
@@ -31,7 +31,7 @@ class MenuKickUser(UserSelect):
             response = language.get_embed_data('error_private_get_owner')
         else:
             private_channel.owner_id = user.id
-            await private_channel.update_data()
+            await private_channel.update()
 
             response, new_owner = language.get_embed_data(['private_get_owner_member', 'private_new_owner'])
             await user.voice.channel.send(

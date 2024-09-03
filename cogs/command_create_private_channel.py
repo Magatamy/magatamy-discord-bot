@@ -30,10 +30,10 @@ class CreatePrivateChannel(commands.Cog):
         voice_channel = await category.create_voice_channel(name=voice_channel_name)
 
         guild_setting = GuildSettingsTable(guild_id=inter.guild.id)
-        await guild_setting.load_data(get_columns=None)
+        await guild_setting.load(get_columns=None)
         guild_setting.private_category_id = category.id
         guild_setting.private_voice_channel_id = voice_channel.id
-        await guild_setting.update_data()
+        await guild_setting.update()
 
         buttons = ButtonManager()
         buttons.add_button(custom_id=ButtonID.CHANGE_NAME.value, emoji=Emoji.CHANGE_NAME.value)

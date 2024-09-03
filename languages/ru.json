@@ -6,7 +6,10 @@
         "create_saturday_channel_description": "Создает канал для субботника",
         "create_saturday_channel_param_timezone_description": "Тайм зона по UTC",
         "create_saturday_channel_param_hour_description": "Часы для старта субботника",
-        "create_saturday_channel_param_minute_description": "Минуты для старта субботника"
+        "create_saturday_channel_param_minute_description": "Минуты для старта субботника",
+        "anti_nuke_name": "антинюк",
+        "anti_nuke_block_role_name": "роль-блокировки",
+        "anti_nuke_block_role_description": "Выставить роль для блокировки нарушителей"
     },
     "static_text": {
         "private_category_name": "Приватные каналы",
@@ -174,7 +177,7 @@
             },
             {
             "name": "",
-            "value": "<:user:1272121477927276567> — `Забрать доступ в комнату`",
+            "value": "<:user:1272121477927276567> — `Забрать/Выдать доступ`",
             "inline": true
             },
             {
@@ -194,7 +197,7 @@
             },
             {
             "name": "",
-            "value": "<:microfon:1272121527198023680> — `Выдать право говорить`",
+            "value": "<:microfon:1272121527198023680> — `Выдать/Забрать голос`",
             "inline": true
             },
             {
@@ -204,14 +207,32 @@
             },
             {
             "name": "",
+            "value": "<:eye:1272121436974354455> — `Спрятать/Показать комнату`",
+            "inline": true
+            },
+            {
+            "name": "",
             "value": "<:trash:1272121466355187752> — `Выгнать пользователя`",
             "inline": true
             },
             {
             "name": "",
-            "value": "<:vip:1272121516108021791> — `Передать владение комнатой`",
+            "value": "",
+            "inline": true
+            },
+            {
+            "name": "",
+            "value": "<:vip:1272121516108021791> — `Передать владение`",
             "inline": true
             }
         ]
+    },
+    "anti_nuke_block_role_error": {
+        "description": "Эта роль уже установлена для блокировки!",
+        "color": "0xff0000"
+    },
+    "anti_nuke_block_role": {
+        "description": "Роль для блокировки успешно установлена",
+        "color": "0x66cdaa"
     }
 }

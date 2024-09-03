@@ -7,6 +7,7 @@ class GuildSettingsTable(AsyncDatabaseObject):
     __guild_id_attribute = 'guild_id'
     __private_voice_channel_id_attribute = 'private_voice_channel_id'
     __private_category_id_attribute = 'private_voice_category_id'
+    __test_attribute = 'test'
 
     def __init__(self, guild_id: int = None):
         data_record = {self.__guild_id_attribute: guild_id}
@@ -32,9 +33,9 @@ class GuildSettingsTable(AsyncDatabaseObject):
     def columns(self) -> list:
         return [
             (self.__private_voice_channel_id_attribute, 'INTEGER', 'NULL'),
-            (self.__private_category_id_attribute, 'INTEGER', 'NULL')
+            (self.__private_category_id_attribute, 'INTEGER', '0')
         ]
 
     async def load_private(self):
-        await self.load_data(get_columns=(self.__private_voice_channel_id_attribute,
-                                          self.__private_category_id_attribute))
+        await self.load(get_columns=(self.__private_voice_channel_id_attribute,
+                                     self.__private_category_id_attribute))

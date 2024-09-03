@@ -1,4 +1,4 @@
-import pytz
+from config import custom_magatamy_guilds
 
 from datetime import time
 from disnake import ApplicationCommandInteraction, TextChannel
@@ -22,7 +22,7 @@ class CreateSaturdayChannel(commands.Cog):
     def __init__(self, client: commands.AutoShardedInteractionBot):
         self.client = client
 
-    @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION)
+    @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION, guild_ids=custom_magatamy_guilds)
     @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
     async def create_saturday_channel(
@@ -36,10 +36,10 @@ class CreateSaturdayChannel(commands.Cog):
                 default=0, min_value=1, max_value=59, description=COMMAND_PARAM_MINUTE_DESCRIPTION)
     ):
         saturday = SaturdayChannelsTable(channel_id=channel.id)
-        await saturday.load_data()
+        await saturday.load()
         saturday.timezone = timezone
         saturday.time = time(hour=hour, minute=minute)
-        await saturday.update_data()
+        await saturday.update()
 
         language = LanguageManager(locale=inter.guild_locale)
         response = language.get_embed_data(json_key='create_saturday_channel')
@@ -48,4 +48,3 @@ class CreateSaturdayChannel(commands.Cog):
 
 def setup(client: commands.AutoShardedInteractionBot):
     client.add_cog(CreateSaturdayChannel(client))
-

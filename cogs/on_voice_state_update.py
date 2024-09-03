@@ -13,7 +13,7 @@ class OnVoiceStateUpdate(commands.Cog):
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState):
         if before.channel and before.channel != after.channel:
             private_channel = PrivateChannelsTable(channel_id=before.channel.id)
-            if await private_channel.load_data(create=False):
+            if await private_channel.load(create=False):
                 if not before.channel.members:
                     await before.channel.delete()
                     await private_channel.delete_data()
@@ -23,7 +23,7 @@ class OnVoiceStateUpdate(commands.Cog):
 
                     random_member: Member = random.choice(members)
                     private_channel.owner_id = random_member.id
-                    await private_channel.update_data()
+                    await private_channel.update()
 
                     language = LanguageManager(locale=before.channel.guild.preferred_locale)
                     private_new_owner = language.get_embed_data('private_new_owner')
@@ -40,7 +40,7 @@ class OnVoiceStateUpdate(commands.Cog):
                 await member.move_to(channel=voice_channel)
 
                 private_channel = PrivateChannelsTable(channel_id=voice_channel.id, owner_id=member.id)
-                await private_channel.insert_data(data=private_channel.data_record)
+                await private_channel.insert(data=private_channel.data_record)
 
 
 def setup(client: commands.AutoShardedInteractionBot):

@@ -35,7 +35,8 @@ class AsyncDatabaseObject:
         with db_check_columns.CheckColumns(DATABASE) as db:
             return db.check_columns_for_changes(self.table_name, columns)
 
-    def create_table(self, columns: list):
+    def create_table(self):
+        columns = deepcopy(self.columns)
         columns.insert(0, (self.primary_key, 'INTEGER PRIMARY KEY'))
 
         result = self.__create_table(columns)
@@ -43,48 +44,52 @@ class AsyncDatabaseObject:
         if not result:
             self.__check_columns_for_changes(columns)
 
-    async def load_data(self, get_columns='*', condition_data: dict = None, create: bool = True,
-                        get_all: bool = False) -> bool:
+    async def load(self, get_columns='*', condition_data: dict = None, create: bool = True) -> bool:
         if not condition_data:
             condition_data = self.data_record
         if not get_columns:
             get_columns = tuple([self.primary_key])
 
-        if not get_all:
-            async with db_get_data.AsyncGetData(DATABASE) as db:
+        async with db_get_data.AsyncGetData(DATABASE) as db:
+            result = await db.get_data(self.table_name, condition_data, get_columns)
+
+            if not result and self.data_record and create:
+                await self.insert(self.data_record)
                 result = await db.get_data(self.table_name, condition_data, get_columns)
 
-                if not result and self.data_record and create:
-                    await self.insert_data(self.data_record)
-                    result = await db.get_data(self.table_name, condition_data, get_columns)
+            if not result:
+                return False
 
-                if not result:
-                    return False
-
-                self._data = deepcopy(result[0])
-                self._static_data = deepcopy(result[0])
-
-        else:
-            async with db_get_all_data.AsyncGetAllData(DATABASE) as db:
-                result = await db.get_all_data(self.table_name, get_columns)
-                self._data = self.get_objects_from_tuple(data=result)
+            self._data = deepcopy(result[0])
+            self._static_data = deepcopy(result[0])
 
         if result:
             return True
 
-    async def insert_data(self, data: dict = None):
+    async def load_all(self, get_columns='*') -> bool:
+        if not get_columns:
+            get_columns = tuple([self.primary_key])
+
+        async with db_get_all_data.AsyncGetAllData(DATABASE) as db:
+            result = await db.get_all_data(self.table_name, get_columns)
+            self._data = self.get_objects_from_tuple(data=result)
+
+        if result:
+            return True
+
+    async def insert(self, data: dict = None):
         if not data:
             data = self.data_insert
         async with db_insert_data.AsyncInsertData(DATABASE) as db:
             await db.insert_data(self.table_name, data)
 
-    async def delete_data(self, condition_data: dict = None) -> bool:
+    async def delete(self, condition_data: dict = None) -> bool:
         if not condition_data:
             condition_data = self.data_record
         async with db_delete_data.AsyncDeleteData(DATABASE) as db:
             return await db.delete_data(self.table_name, condition_data)
 
-    async def update_data(self, data: dict = None, condition_data: str = None):
+    async def update(self, data: dict = None, condition_data: str = None):
         if not data:
             if not self._data:
                 return
@@ -108,4 +113,8 @@ class AsyncDatabaseObject:
 
     @staticmethod
     def get_objects_from_tuple(data: tuple[dict]) -> list:
+        return list()
+
+    @property
+    def columns(self) -> list:
         return list()

@@ -124,7 +124,7 @@ class OnButtonClick(commands.Cog):
             return
 
         private_channel = PrivateChannelsTable(channel_id=inter.author.voice.channel.id)
-        if not await private_channel.load_data(create=False):
+        if not await private_channel.load(create=False):
             await inter.response.send_message(embed=EmbedGenerator(json_schema=error_not_in_private), ephemeral=True)
             return
 

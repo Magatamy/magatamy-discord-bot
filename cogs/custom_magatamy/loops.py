@@ -15,7 +15,7 @@ class Loops(commands.Cog):
     @tasks.loop(minutes=1)
     async def start_saturday(self):
         saturdays = SaturdayChannelsTable()
-        await saturdays.load_data(get_all=True)
+        await saturdays.load_all()
         for saturday in saturdays:
             channel = self.client.get_channel(saturday.channel_id)
             if not channel:
@@ -43,7 +43,7 @@ class Loops(commands.Cog):
             else:
                 continue
 
-            await saturday.update_data()
+            await saturday.update()
             await channel.set_permissions(target=channel.guild.default_role, overwrite=overwrite)
             await channel.send(embed=EmbedGenerator(json_schema=message))
 
