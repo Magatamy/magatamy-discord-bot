@@ -19,9 +19,6 @@ TIMEZONES = ['UTC+0', 'UTC+1', 'UTC+2', 'UTC+3', 'UTC+4', 'UTC+5', 'UTC+6', 'UTC
 
 
 class CreateSaturdayChannel(commands.Cog):
-    def __init__(self, client: commands.AutoShardedInteractionBot):
-        self.client = client
-
     @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION, guild_ids=custom_magatamy_guilds)
     @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
@@ -41,7 +38,7 @@ class CreateSaturdayChannel(commands.Cog):
         saturday.time = time(hour=hour, minute=minute)
         await saturday.update()
 
-        language = LanguageManager(locale=inter.guild_locale)
+        language = LanguageManager(locale=inter.locale)
         response = language.get_embed_data(json_key='create_saturday_channel')
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
 

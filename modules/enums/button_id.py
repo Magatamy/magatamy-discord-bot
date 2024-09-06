@@ -10,3 +10,6 @@ class ButtonID(Enum):
     KICK_USER = "b-5"
     GET_OWNER = "b-6"
     HIDE_SHOW_ROOM = "b-7"
+    POST_REQUEST_VANILLA = "b-8"
+    ACCEPT_REQUEST_VANILLA = "b-9"
+    REJECT_REQUEST_VANILLA = "b-10"

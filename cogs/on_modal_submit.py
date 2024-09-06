@@ -9,7 +9,7 @@ from modules.enums import ModalID, ModalInputID
 class OnModalSubmit(commands.Cog):
     @commands.Cog.listener()
     async def on_modal_submit(self, inter: ModalInteraction):
-        language = LanguageManager(locale=inter.guild_locale)
+        language = LanguageManager(locale=inter.locale)
         modal_actions = {
             ModalID.CHANGE_NAME.value: self.change_name,
             ModalID.CHANGE_LIMIT.value: self.change_limit

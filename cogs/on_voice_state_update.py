@@ -16,7 +16,7 @@ class OnVoiceStateUpdate(commands.Cog):
             if await private_channel.load(create=False):
                 if not before.channel.members:
                     await before.channel.delete()
-                    await private_channel.delete_data()
+                    await private_channel.delete()
 
                 elif member.id == private_channel.owner_id:
                     members = [member for member in before.channel.members if not member.bot]

@@ -13,7 +13,7 @@ class MenuUserAccess(UserSelect):
 
     async def callback(self, inter: MessageInteraction):
         user = self.values[0]
-        language = LanguageManager(locale=inter.guild_locale)
+        language = LanguageManager(locale=inter.locale)
 
         private_channel = PrivateChannelsTable(channel_id=self.channel_id)
         if not await private_channel.load(create=False):

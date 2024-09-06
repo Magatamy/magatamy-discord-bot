@@ -18,7 +18,7 @@ class CreatePrivateChannel(commands.Cog):
     @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
     async def create_private_channel(self, inter: ApplicationCommandInteraction):
-        language = LanguageManager(locale=inter.guild_locale)
+        language = LanguageManager(locale=inter.locale)
 
         response, channel_setting = language.get_embed_data(['create_private_channel', 'private_channel_setting'])
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)

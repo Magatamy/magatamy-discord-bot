@@ -3,7 +3,7 @@ import time
 
 from disnake.ext import commands
 from disnake import Activity, ActivityType, Intents
-from modules.database import UsersTable, GuildSettingsTable, PrivateChannelsTable, SaturdayChannelsTable, AntiNukeTable
+from modules.database import UsersTable, GuildSettingsTable, PrivateChannelsTable, SaturdayChannelsTable, AntiNukeTable, RequestVanilla
 from config import TEST_GUILDS, IGNORE_COG_NAMES, BOT_TOKEN, ACTIVITY_NAME, OWNER_IDS
 
 
@@ -19,6 +19,7 @@ def check_db_tables():
     GuildSettingsTable().create_table()
     PrivateChannelsTable().create_table()
     SaturdayChannelsTable().create_table()
+    RequestVanilla().create_table()
 
 
 def load_extensions(load_extension: commands.AutoShardedInteractionBot.load_extensions):

@@ -37,10 +37,9 @@ class OnMemberRemove(commands.Cog):
         users_ban = await get_audit_entries(AuditLogAction.ban, anti_nuke.timeout_for_ban)
         users_kick = await get_audit_entries(AuditLogAction.kick, anti_nuke.timeout_for_kick)
 
-        async def process_users(users: list[Member], protection_count: int, action_key: str):
+        async def process_users(users: list[Member], protection_count: int, action_key: str, log_key: str):
             counter = Counter(users)
             for user, count in counter.items():
-                print(count, protection_count)
                 if count >= protection_count:
                     role = guild.get_role(anti_nuke.block_role_id)
                     if role in user.roles:
@@ -51,14 +50,15 @@ class OnMemberRemove(commands.Cog):
 
                     log_channel = guild.get_channel(anti_nuke.log_channel_id)
                     language = LanguageManager(locale=guild.preferred_locale)
-                    user_response, log = language.get_embed_data(
-                        json_key=[action_key, f'{action_key}_log'])
+                    user_response, log = language.get_embed_data(json_key=[action_key, log_key])
 
                     await user.send(embed=EmbedGenerator(json_schema=user_response))
                     await log_channel.send(embed=EmbedGenerator(json_schema=log, user=user.name, user_id=user.id))
 
-        await process_users(users_ban, anti_nuke.ban_protection_count, 'anti_nuke_ban_blocked')
-        await process_users(users_kick, anti_nuke.kick_protection_count, 'anti_nuke_kick_blocked')
+        await process_users(users_ban, anti_nuke.ban_protection_count,
+                            'anti_nuke_ban_blocked', 'anti_nuke_ban_blocked_log')
+        await process_users(users_kick, anti_nuke.kick_protection_count,
+                            'anti_nuke_kick_blocked', 'anti_nuke_kick_blocked_log')
 
 
 def setup(client: commands.AutoShardedInteractionBot):

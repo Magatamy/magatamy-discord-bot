@@ -12,7 +12,7 @@ from modules.menus import MenuViewKickUser, MenuViewGetOwner, MenuViewMuteUser, 
 class OnButtonClick(commands.Cog):
     @commands.Cog.listener()
     async def on_button_click(self, inter: MessageInteraction):
-        language = LanguageManager(locale=inter.guild_locale)
+        language = LanguageManager(locale=inter.locale)
         button_actions = {
             ButtonID.CHANGE_NAME.value: self.change_name,
             ButtonID.NEW_LIMIT.value: self.new_limit,

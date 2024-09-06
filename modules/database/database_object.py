@@ -7,11 +7,10 @@ DATABASE = 'database.db'
 
 
 class AsyncDatabaseObject:
-    def __init__(self, table_name: str, primary_key: str, data_record: dict = None, data_insert: dict = None):
+    def __init__(self, table_name: str, primary_key: str, data_record: dict = None):
         self.table_name = table_name
         self.primary_key = primary_key
         self.data_record = data_record
-        self.data_insert = data_insert
         self._static_data = None
         self._data = None
 
@@ -94,7 +93,7 @@ class AsyncDatabaseObject:
 
     async def insert(self, data: dict = None):
         if not data:
-            data = self.data_insert
+            data = self.data_record
         async with db_insert_data.AsyncInsertData(DATABASE) as db:
             await db.insert_data(self.table_name, data)
 
