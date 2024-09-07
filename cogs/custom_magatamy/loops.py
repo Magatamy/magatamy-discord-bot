@@ -2,7 +2,7 @@ from disnake.ext import commands, tasks
 from datetime import datetime, timedelta
 from pytz import FixedOffset
 
-from modules.database import SaturdayChannelsTable
+from modules.database import SaturdayChannelsTable, GuildSettingsTable
 from modules.managers import LanguageManager
 from modules.generators import EmbedGenerator
 
@@ -22,7 +22,9 @@ class Loops(commands.Cog):
                 await saturday.delete_data()
                 continue
 
-            language = LanguageManager(locale=channel.guild.preferred_locale)
+            settings = GuildSettingsTable(guild_id=channel.guild.id)
+            await settings.load()
+            language = LanguageManager(locale=channel.guild.preferred_locale, language=settings.language)
 
             offset_hours = int(saturday.timezone.replace('UTC', ''))
             timezone = FixedOffset(offset_hours * 60)

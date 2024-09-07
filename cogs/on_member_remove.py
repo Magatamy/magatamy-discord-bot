@@ -5,7 +5,7 @@ from collections import Counter
 
 from modules.managers import LanguageManager
 from modules.generators import EmbedGenerator
-from modules.database import AntiNukeTable, UsersTable
+from modules.database import AntiNukeTable, UsersTable, GuildSettingsTable
 
 
 class OnMemberRemove(commands.Cog):
@@ -49,7 +49,9 @@ class OnMemberRemove(commands.Cog):
                     await user.edit(roles=[role])
 
                     log_channel = guild.get_channel(anti_nuke.log_channel_id)
-                    language = LanguageManager(locale=guild.preferred_locale)
+                    settings = GuildSettingsTable(guild_id=channel.guild.id)
+                    await settings.load()
+                    language = LanguageManager(locale=guild.preferred_locale, language=settings.language)
                     user_response, log = language.get_embed_data(json_key=[action_key, log_key])
 
                     await user.send(embed=EmbedGenerator(json_schema=user_response))

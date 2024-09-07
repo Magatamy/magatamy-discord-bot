@@ -4,7 +4,7 @@ from disnake.ext import commands
 
 from modules.managers import Localized, LanguageManager
 from modules.generators import EmbedGenerator
-from modules.database import AntiNukeTable
+from modules.database import AntiNukeTable, GuildSettingsTable
 
 COMMAND_NAME = Localized('anti_nuke_name')
 BLOCK_ROLE_NAME = Localized('anti_nuke_block_role_name')
@@ -33,7 +33,9 @@ class AntiNuke(commands.Cog):
 
     @anti_nuke.sub_command(name=LOG_CHANNEL_NAME, description=LOG_CHANNEL_DESCRIPTION)
     async def log_channel(self, inter: ApplicationCommandInteraction, channel: TextChannel):
-        language = LanguageManager(locale=inter.locale)
+        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        await settings.load()
+        language = LanguageManager(locale=inter.locale, language=settings.language)
         anti_nuke = AntiNukeTable(guild_id=inter.guild.id)
         await anti_nuke.load()
 
@@ -48,7 +50,9 @@ class AntiNuke(commands.Cog):
 
     @anti_nuke.sub_command(name=BLOCK_ROLE_NAME, description=BLOCK_ROLE_DESCRIPTION)
     async def block_role(self, inter: ApplicationCommandInteraction, role: Role):
-        language = LanguageManager(locale=inter.locale)
+        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        await settings.load()
+        language = LanguageManager(locale=inter.locale, language=settings.language)
         anti_nuke = AntiNukeTable(guild_id=inter.guild.id)
         await anti_nuke.load()
 
@@ -68,7 +72,9 @@ class AntiNuke(commands.Cog):
             count: int = commands.Param(min_value=1, max_value=100, description=BAN_PROTECTION_COUNT_DESCRIPTION),
             time: int = commands.Param(min_value=1, max_value=86400, description=BAN_PROTECTION_TIME_DESCRIPTION)
     ):
-        language = LanguageManager(locale=inter.locale)
+        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        await settings.load()
+        language = LanguageManager(locale=inter.locale, language=settings.language)
         anti_nuke = AntiNukeTable(guild_id=inter.guild.id)
         await anti_nuke.load()
         anti_nuke.timeout_for_ban = timedelta(seconds=time) + datetime(1, 1, 1)
@@ -86,7 +92,9 @@ class AntiNuke(commands.Cog):
             count: int = commands.Param(min_value=1, max_value=100, description=KICK_PROTECTION_COUNT_DESCRIPTION),
             time: int = commands.Param(min_value=1, max_value=86400, description=KICK_PROTECTION_TIME_DESCRIPTION)
     ):
-        language = LanguageManager(locale=inter.locale)
+        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        await settings.load()
+        language = LanguageManager(locale=inter.locale, language=settings.language)
         anti_nuke = AntiNukeTable(guild_id=inter.guild.id)
         await anti_nuke.load()
         anti_nuke.timeout_for_kick = timedelta(seconds=time) + datetime(1, 1, 1)

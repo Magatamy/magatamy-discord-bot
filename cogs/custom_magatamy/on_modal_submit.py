@@ -5,13 +5,15 @@ from disnake.ext import commands
 from modules.generators import EmbedGenerator
 from modules.managers import LanguageManager, ButtonManager
 from modules.enums import ModalID, ModalInputID, RequestStatus, ButtonID
-from modules.database import RequestVanilla
+from modules.database import RequestVanilla, GuildSettingsTable
 
 
 class OnModalSubmitMagatamy(commands.Cog):
     @commands.Cog.listener()
     async def on_modal_submit(self, inter: ModalInteraction):
-        language = LanguageManager(locale=inter.locale)
+        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        await settings.load()
+        language = LanguageManager(locale=inter.locale, language=settings.language)
         modal_actions = {
             ModalID.REQUEST_VANILLA.value: self.request_vanilla
         }

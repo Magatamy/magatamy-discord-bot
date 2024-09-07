@@ -2,7 +2,7 @@ from disnake import MessageInteraction, InteractionResponse, PermissionOverwrite
 from disnake.ext import commands
 
 from modules.generators import EmbedGenerator
-from modules.database import PrivateChannelsTable
+from modules.database import PrivateChannelsTable, GuildSettingsTable
 from modules.managers import LanguageManager
 from modules.enums import ButtonID
 from modules.modals import ModalChangeLimit, ModalChangeName
@@ -12,7 +12,9 @@ from modules.menus import MenuViewKickUser, MenuViewGetOwner, MenuViewMuteUser, 
 class OnButtonClick(commands.Cog):
     @commands.Cog.listener()
     async def on_button_click(self, inter: MessageInteraction):
-        language = LanguageManager(locale=inter.locale)
+        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        await settings.load()
+        language = LanguageManager(locale=inter.locale, language=settings.language)
         button_actions = {
             ButtonID.CHANGE_NAME.value: self.change_name,
             ButtonID.NEW_LIMIT.value: self.new_limit,

@@ -1,6 +1,7 @@
 from disnake import ModalInteraction
 from disnake.ext import commands
 
+from modules.database import GuildSettingsTable
 from modules.generators import EmbedGenerator
 from modules.managers import LanguageManager
 from modules.enums import ModalID, ModalInputID
@@ -9,7 +10,9 @@ from modules.enums import ModalID, ModalInputID
 class OnModalSubmit(commands.Cog):
     @commands.Cog.listener()
     async def on_modal_submit(self, inter: ModalInteraction):
-        language = LanguageManager(locale=inter.locale)
+        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        await settings.load()
+        language = LanguageManager(locale=inter.locale, language=settings.language)
         modal_actions = {
             ModalID.CHANGE_NAME.value: self.change_name,
             ModalID.CHANGE_LIMIT.value: self.change_limit

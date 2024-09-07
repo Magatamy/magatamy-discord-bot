@@ -23,7 +23,10 @@
         "create_request_vanilla_name": "создать-заявку-vanilla",
         "create_request_vanilla_description": "Создает сообщение где можно подать заявку на Vanilla",
         "remove_request_vanilla_name": "удалить-заявку-vanilla",
-        "remove_request_vanilla_description": "Удаляет заявку пользователя из бд"
+        "remove_request_vanilla_description": "Удаляет заявку пользователя из бд",
+        "language_name": "язык",
+        "language_description": "Выбрать дефолтный язык для сервера дискорд",
+        "language_param_description": "Список доступных языков"
     },
     "static_text": {
         "button_request_vanilla": "Подать заявку",
@@ -288,5 +291,13 @@
     "remove_request_vanilla_error": {
         "description": "Заявку пользователя не удалось удалить",
         "color": "0xff0000"
+    },
+    "disable_language": {
+        "description": "Дефолтный язык для дискорд сервера отключен",
+        "color": "0x66cdaa"
+    },
+    "change_language": {
+        "description": "Дефолтный язык для дискорд сервера выставлен",
+        "color": "0x66cdaa"
     }
 }

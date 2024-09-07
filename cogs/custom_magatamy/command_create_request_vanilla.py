@@ -5,6 +5,7 @@ from disnake.ext import commands
 from modules.managers import LanguageManager, Localized, ButtonManager
 from modules.generators import EmbedGenerator
 from modules.enums import ButtonID
+from modules.database import GuildSettingsTable
 
 COMMAND_NAME = Localized('create_request_vanilla_name')
 COMMAND_DESCRIPTION = Localized('create_request_vanilla_description')
@@ -12,9 +13,12 @@ COMMAND_DESCRIPTION = Localized('create_request_vanilla_description')
 
 class CreateRequestVanilla(commands.Cog):
     @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION, guild_ids=custom_magatamy_guilds)
+    @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
     async def create_request_vanilla(self, inter: ApplicationCommandInteraction):
-        language = LanguageManager(locale=inter.locale)
+        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        await settings.load()
+        language = LanguageManager(locale=inter.locale, language=settings.language)
         post_text, response = language.get_embed_data(['create_request_vanilla', 'create_request_vanilla_response'])
         button_label = language.get_static('button_request_vanilla')
 
