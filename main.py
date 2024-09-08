@@ -3,7 +3,7 @@ import time
 
 from disnake.ext import commands
 from disnake import Activity, ActivityType, Intents
-from modules.database import UsersTable, GuildSettingsTable, PrivateChannelsTable, SaturdayChannelsTable, AntiNukeTable, RequestVanilla
+from modules.redis import Users
 from config import TEST_GUILDS, IGNORE_COG_NAMES, BOT_TOKEN, ACTIVITY_NAME, OWNER_IDS
 
 
@@ -13,13 +13,10 @@ def get_intents():
     return intents
 
 
-def check_db_tables():
-    UsersTable().create_table()
-    AntiNukeTable().create_table()
-    GuildSettingsTable().create_table()
-    PrivateChannelsTable().create_table()
-    SaturdayChannelsTable().create_table()
-    RequestVanilla().create_table()
+def check_redis_fields(classes: list):
+    for cls in classes:
+        instance = cls()
+        instance.check_fields()
 
 
 def load_extensions(load_extension: commands.AutoShardedInteractionBot.load_extensions):
@@ -46,7 +43,7 @@ if __name__ == '__main__':
     )
     client.start_time = int(time.time())
 
-    check_db_tables()
+    check_redis_fields([Users])
     load_extensions(client.load_extension)
 
     client.run(BOT_TOKEN)

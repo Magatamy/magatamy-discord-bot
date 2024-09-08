@@ -5,7 +5,7 @@ from collections import Counter
 
 from modules.managers import LanguageManager
 from modules.generators import EmbedGenerator
-from modules.database import AntiNukeTable, UsersTable, GuildSettingsTable
+from modules.database import AntiNukeTable, GuildSettingsTable
 
 
 class OnMemberRemove(commands.Cog):

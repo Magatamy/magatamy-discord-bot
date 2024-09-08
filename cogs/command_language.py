@@ -17,7 +17,8 @@ class Language(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def language(
             self, inter: ApplicationCommandInteraction,
-            language: str = commands.Param(default='disable', choices=LANGUAGES_CHOICES, description=LANGUAGES_DESCRIPTION)):
+            language: str = commands.Param(
+                default='disable', choices=LANGUAGES_CHOICES, description=LANGUAGES_DESCRIPTION)):
         settings = GuildSettingsTable(guild_id=inter.guild.id)
         await settings.load()
         if language == 'disable':
