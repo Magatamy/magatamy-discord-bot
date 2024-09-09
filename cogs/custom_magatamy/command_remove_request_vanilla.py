@@ -2,7 +2,7 @@ from config import custom_magatamy_guilds
 from disnake import ApplicationCommandInteraction, Member
 from disnake.ext import commands
 
-from modules.database import RequestVanilla, GuildSettingsTable
+from modules.redis import RequestVanilla, GuildSettings
 from modules.managers import LanguageManager, Localized
 from modules.generators import EmbedGenerator
 
@@ -15,10 +15,12 @@ class RemoveRequestVanilla(commands.Cog):
     @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
     async def remove_request_vanilla(self, inter: ApplicationCommandInteraction, user: Member):
-        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        settings = GuildSettings(key=inter.guild.id)
         await settings.load()
+
         language = LanguageManager(locale=inter.locale, language=settings.language)
-        request = RequestVanilla(member_id=user.id)
+
+        request = RequestVanilla(key=user.id)
         if await request.delete():
             response = language.get_embed_data('remove_request_vanilla')
         else:

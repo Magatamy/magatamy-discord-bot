@@ -6,7 +6,7 @@ from disnake.ext import commands
 
 from modules.managers import Localized, LanguageManager
 from modules.generators import EmbedGenerator
-from modules.database import SaturdayChannelsTable, GuildSettingsTable
+from modules.redis import SaturdayChannels, GuildSettings
 
 COMMAND_NAME = Localized('create_saturday_channel_name')
 COMMAND_DESCRIPTION = Localized('create_saturday_channel_description')
@@ -32,14 +32,15 @@ class CreateSaturdayChannel(commands.Cog):
             minute: int = commands.Param(
                 default=0, min_value=1, max_value=59, description=COMMAND_PARAM_MINUTE_DESCRIPTION)
     ):
-        saturday = SaturdayChannelsTable(channel_id=channel.id)
+        saturday = SaturdayChannels(key=channel.id)
         await saturday.load()
         saturday.timezone = timezone
-        saturday.time = time(hour=hour, minute=minute)
-        await saturday.update()
+        saturday.timestamp = ((hour * 60 * 60) + (minute * 60)) * 1000
+        await saturday.save()
 
-        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        settings = GuildSettings(key=inter.guild.id)
         await settings.load()
+
         language = LanguageManager(locale=inter.locale, language=settings.language)
         response = language.get_embed_data(json_key='create_saturday_channel')
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)

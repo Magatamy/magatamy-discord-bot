@@ -1,7 +1,7 @@
 from disnake import SelectOption, Member, MessageInteraction
 from disnake.ui import UserSelect, View
 
-from modules.database import PrivateChannelsTable, GuildSettingsTable
+from modules.redis import PrivateChannels, GuildSettings
 from modules.managers import LanguageManager
 from modules.generators import EmbedGenerator
 
@@ -14,12 +14,12 @@ class MenuKickUser(UserSelect):
     async def callback(self, inter: MessageInteraction):
         user = self.values[0]
 
-        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        settings = GuildSettings(key=inter.guild.id)
         await settings.load()
         language = LanguageManager(locale=inter.locale, language=settings.language)
 
-        private_channel = PrivateChannelsTable(channel_id=self.channel_id)
-        if not await private_channel.load(create=False):
+        private_channel = PrivateChannels(key=self.channel_id)
+        if not await private_channel.load():
             error_response = language.get_embed_data('error_private_not_exist')
             await inter.response.send_message(embed=EmbedGenerator(json_schema=error_response), ephemeral=True)
             return

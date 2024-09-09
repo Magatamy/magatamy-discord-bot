@@ -3,7 +3,6 @@ import time
 
 from disnake.ext import commands
 from disnake import Activity, ActivityType, Intents
-from modules.redis import Users
 from config import TEST_GUILDS, IGNORE_COG_NAMES, BOT_TOKEN, ACTIVITY_NAME, OWNER_IDS
 
 
@@ -11,12 +10,6 @@ def get_intents():
     intents = Intents.default()
     intents.members = True
     return intents
-
-
-def check_redis_fields(classes: list):
-    for cls in classes:
-        instance = cls()
-        instance.check_fields()
 
 
 def load_extensions(load_extension: commands.AutoShardedInteractionBot.load_extensions):
@@ -42,8 +35,5 @@ if __name__ == '__main__':
         chunk_guilds_at_startup=True
     )
     client.start_time = int(time.time())
-
-    check_redis_fields([Users])
     load_extensions(client.load_extension)
-
     client.run(BOT_TOKEN)

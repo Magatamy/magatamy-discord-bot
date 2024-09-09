@@ -2,7 +2,7 @@ from disnake import MessageInteraction, InteractionResponse, PermissionOverwrite
 from disnake.ext import commands
 
 from modules.generators import EmbedGenerator
-from modules.database import PrivateChannelsTable, GuildSettingsTable
+from modules.redis import PrivateChannels, GuildSettings
 from modules.managers import LanguageManager
 from modules.enums import ButtonID
 from modules.modals import ModalChangeLimit, ModalChangeName
@@ -12,8 +12,9 @@ from modules.menus import MenuViewKickUser, MenuViewGetOwner, MenuViewMuteUser, 
 class OnButtonClick(commands.Cog):
     @commands.Cog.listener()
     async def on_button_click(self, inter: MessageInteraction):
-        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        settings = GuildSettings(key=inter.guild.id)
         await settings.load()
+
         language = LanguageManager(locale=inter.locale, language=settings.language)
         button_actions = {
             ButtonID.CHANGE_NAME.value: self.change_name,
@@ -117,7 +118,7 @@ class OnButtonClick(commands.Cog):
 
     @staticmethod
     async def check_and_get_private(
-            inter: MessageInteraction, language: LanguageManager) -> PrivateChannelsTable | None:
+            inter: MessageInteraction, language: LanguageManager) -> PrivateChannels | None:
         error_not_in_voice, error_not_in_private, error_not_is_owner = language.get_embed_data(
             ['error_private_not_in_voice', 'error_private_not_in_private', 'error_channel_not_is_owner'])
 
@@ -125,8 +126,8 @@ class OnButtonClick(commands.Cog):
             await inter.response.send_message(embed=EmbedGenerator(json_schema=error_not_in_voice), ephemeral=True)
             return
 
-        private_channel = PrivateChannelsTable(channel_id=inter.author.voice.channel.id)
-        if not await private_channel.load(create=False):
+        private_channel = PrivateChannels(key=inter.author.voice.channel.id)
+        if not await private_channel.load():
             await inter.response.send_message(embed=EmbedGenerator(json_schema=error_not_in_private), ephemeral=True)
             return
 

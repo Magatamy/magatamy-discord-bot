@@ -2,7 +2,7 @@ from disnake import ApplicationCommandInteraction
 from disnake.ext import commands
 
 from modules.managers import Localized, LanguageManager, LANGUAGES_DATA
-from modules.database import GuildSettingsTable
+from modules.redis import GuildSettings
 from modules.generators import EmbedGenerator
 
 LANGUAGES_CHOICES = ['disable', *list(LANGUAGES_DATA.keys())]
@@ -19,15 +19,16 @@ class Language(commands.Cog):
             self, inter: ApplicationCommandInteraction,
             language: str = commands.Param(
                 default='disable', choices=LANGUAGES_CHOICES, description=LANGUAGES_DESCRIPTION)):
-        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        settings = GuildSettings(key=inter.guild.id)
         await settings.load()
+
         if language == 'disable':
             settings.language = None
             json_key = 'disable_language'
         else:
             settings.language = language
             json_key = 'change_language'
-        await settings.update()
+        await settings.save()
 
         language = LanguageManager(locale=inter.locale, language=settings.language)
         response = language.get_embed_data(json_key)

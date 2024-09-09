@@ -5,7 +5,7 @@ from collections import Counter
 
 from modules.managers import LanguageManager
 from modules.generators import EmbedGenerator
-from modules.database import AntiNukeTable, GuildSettingsTable
+from modules.redis import AntiNuke, GuildSettings
 
 
 class OnMemberRemove(commands.Cog):
@@ -17,16 +17,13 @@ class OnMemberRemove(commands.Cog):
     @staticmethod
     async def check_antinuke(guild: Guild):
         time_now = datetime.utcnow()
-        anti_nuke = AntiNukeTable(guild_id=guild.id)
+        anti_nuke = AntiNuke(key=guild.id)
         await anti_nuke.load()
 
-        async def get_audit_entries(action: AuditLogAction, timeout) -> list[Member]:
-            time_after = time_now - timedelta(
-                hours=timeout.hour,
-                minutes=timeout.minute,
-                seconds=timeout.second
-            )
+        async def get_audit_entries(action: AuditLogAction, timeout: int) -> list[Member]:
+            time_after = time_now - timedelta(milliseconds=timeout)
             clear_time = time_after.replace(tzinfo=None)
+
             entries = []
             async for entry in guild.audit_logs(action=action, limit=None, after=time_after):
                 if entry.created_at.replace(tzinfo=None) >= clear_time:
@@ -49,8 +46,9 @@ class OnMemberRemove(commands.Cog):
                     await user.edit(roles=[role])
 
                     log_channel = guild.get_channel(anti_nuke.log_channel_id)
-                    settings = GuildSettingsTable(guild_id=channel.guild.id)
+                    settings = GuildSettings(key=guild.id)
                     await settings.load()
+
                     language = LanguageManager(locale=guild.preferred_locale, language=settings.language)
                     user_response, log = language.get_embed_data(json_key=[action_key, log_key])
 

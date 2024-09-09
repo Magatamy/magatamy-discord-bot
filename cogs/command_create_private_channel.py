@@ -3,7 +3,7 @@ from disnake.ext import commands
 
 from modules.managers import Localized, LanguageManager, ButtonManager
 from modules.generators import EmbedGenerator
-from modules.database import GuildSettingsTable
+from modules.redis import GuildSettings
 from modules.enums import ButtonID, Emoji
 
 COMMAND_NAME = Localized('create_private_channel_name')
@@ -11,15 +11,13 @@ COMMAND_DESCRIPTION = Localized('create_private_channel_description')
 
 
 class CreatePrivateChannel(commands.Cog):
-    def __init__(self, client: commands.AutoShardedInteractionBot):
-        self.client = client
-
     @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION)
     @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
     async def create_private_channel(self, inter: ApplicationCommandInteraction):
-        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        settings = GuildSettings(key=inter.guild.id)
         await settings.load()
+
         language = LanguageManager(locale=inter.locale, language=settings.language)
 
         response, channel_setting = language.get_embed_data(['create_private_channel', 'private_channel_setting'])
@@ -31,11 +29,9 @@ class CreatePrivateChannel(commands.Cog):
         text_channel = await category.create_text_channel(name=text_channel_name)
         voice_channel = await category.create_voice_channel(name=voice_channel_name)
 
-        guild_setting = GuildSettingsTable(guild_id=inter.guild.id)
-        await guild_setting.load(get_columns=None)
-        guild_setting.private_category_id = category.id
-        guild_setting.private_voice_channel_id = voice_channel.id
-        await guild_setting.update()
+        settings.private_category_id = category.id
+        settings.private_voice_channel_id = voice_channel.id
+        await settings.save()
 
         buttons = ButtonManager()
         buttons.add_button(custom_id=ButtonID.CHANGE_NAME.value, emoji=Emoji.CHANGE_NAME.value)

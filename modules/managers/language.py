@@ -44,7 +44,13 @@ LANGUAGES_DATA = Localized.load_all_language_data()
 class LanguageManager:
     def __init__(self, locale: disnake.Locale, language: str = None):
         self.locale = locale if not language else language
-        self._data = self._load_json_data()
+        self._data = self.__load_json_data()
+
+    def __load_json_data(self) -> dict:
+        language_data = LANGUAGES_DATA.get(self.locale)
+        if not language_data:
+            language_data = LANGUAGES_DATA.get(LANGUAGES_DEFAULT)
+        return language_data
 
     def get_slash_commands_name(self, slash_command_key: str | list) -> str | list:
         language_data = self._data.get('slash_commands')
@@ -62,9 +68,3 @@ class LanguageManager:
         if isinstance(json_key, list):
             return [self._data.get(key) for key in json_key]
         return self._data.get(json_key)
-
-    def _load_json_data(self) -> dict:
-        language_data = LANGUAGES_DATA.get(self.locale)
-        if not language_data:
-            language_data = LANGUAGES_DATA.get(LANGUAGES_DEFAULT)
-        return language_data

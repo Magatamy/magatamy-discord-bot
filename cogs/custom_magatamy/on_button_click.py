@@ -4,7 +4,7 @@ from disnake import MessageInteraction, InteractionResponse, PermissionOverwrite
 from disnake.ext import commands
 
 from modules.generators import EmbedGenerator
-from modules.database import RequestVanilla, GuildSettingsTable
+from modules.redis import RequestVanilla, GuildSettings
 from modules.managers import LanguageManager
 from modules.enums import ButtonID, RequestStatus
 from modules.modals import ModalRequestVanilla
@@ -14,8 +14,9 @@ from modules.menus import MenuViewKickUser, MenuViewGetOwner, MenuViewMuteUser, 
 class OnButtonClickMagatamy(commands.Cog):
     @commands.Cog.listener()
     async def on_button_click(self, inter: MessageInteraction):
-        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        settings = GuildSettings(key=inter.guild.id)
         await settings.load()
+
         language = LanguageManager(locale=inter.locale, language=settings.language)
         button_actions = {
             ButtonID.POST_REQUEST_VANILLA.value: self.request_vanilla,
@@ -28,8 +29,8 @@ class OnButtonClickMagatamy(commands.Cog):
 
     @staticmethod
     async def request_vanilla(inter: MessageInteraction, language: LanguageManager):
-        request = RequestVanilla(member_id=inter.author.id)
-        if await request.load(create=False) and request.status != RequestStatus.REJECTED.value:
+        request = RequestVanilla(key=inter.author.id)
+        if await request.load() and request.status != RequestStatus.REJECTED.value:
             if request.status == RequestStatus.ACCEPTED.value:
                 response = language.get_embed_data('request_vanilla_accepted')
             else:
@@ -48,10 +49,10 @@ class OnButtonClickMagatamy(commands.Cog):
         response = language.get_embed_data('reject_request_vanilla')
         await member.send(embed=EmbedGenerator(json_schema=response))
 
-        request = RequestVanilla(member_id=int(embed.title))
+        request = RequestVanilla(key=int(embed.title))
         await request.load()
         request.status = RequestStatus.REJECTED.value
-        await request.update()
+        await request.save()
 
         embed.title = language.get_static('reject_request_label') + inter.author.name
         embed.colour = Colour.red()
@@ -65,10 +66,10 @@ class OnButtonClickMagatamy(commands.Cog):
         response = language.get_embed_data('accept_request_vanilla')
         await member.send(embed=EmbedGenerator(json_schema=response))
 
-        request = RequestVanilla(member_id=int(embed.title))
+        request = RequestVanilla(key=int(embed.title))
         await request.load()
         request.status = RequestStatus.ACCEPTED.value
-        await request.update()
+        await request.save()
 
         embed.title = language.get_static('accept_request_label') + inter.author.name
         embed.colour = Colour.green()

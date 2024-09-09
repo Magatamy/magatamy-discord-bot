@@ -5,14 +5,15 @@ from disnake.ext import commands
 from modules.generators import EmbedGenerator
 from modules.managers import LanguageManager, ButtonManager
 from modules.enums import ModalID, ModalInputID, RequestStatus, ButtonID
-from modules.database import RequestVanilla, GuildSettingsTable
+from modules.redis import RequestVanilla, GuildSettings
 
 
 class OnModalSubmitMagatamy(commands.Cog):
     @commands.Cog.listener()
     async def on_modal_submit(self, inter: ModalInteraction):
-        settings = GuildSettingsTable(guild_id=inter.guild.id)
+        settings = GuildSettings(key=inter.guild.id)
         await settings.load()
+
         language = LanguageManager(locale=inter.locale, language=settings.language)
         modal_actions = {
             ModalID.REQUEST_VANILLA.value: self.request_vanilla
@@ -52,7 +53,7 @@ class OnModalSubmitMagatamy(commands.Cog):
         ), components=buttons.components)
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
 
-        request = RequestVanilla(member_id=inter.author.id)
+        request = RequestVanilla(key=inter.author.id)
         await request.load()
         request.status = RequestStatus.UNDER_REVIEW.value
         request.name_and_age = name
@@ -60,7 +61,7 @@ class OnModalSubmitMagatamy(commands.Cog):
         request.found_info = info
         request.action_on_server = action
         request.read_rule = rule
-        await request.update()
+        await request.save()
 
 
 def setup(client: commands.AutoShardedInteractionBot):
