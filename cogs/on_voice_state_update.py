@@ -15,6 +15,9 @@ class OnVoiceStateUpdate(commands.Cog):
             setting = GuildSettings(key=before.channel.guild.id)
             await setting.load()
 
+            if before.channel.id == setting.private_voice_channel_id:
+                return
+
             private_channel = PrivateChannels(key=before.channel.id)
             if await private_channel.load():
                 if not before.channel.members:
