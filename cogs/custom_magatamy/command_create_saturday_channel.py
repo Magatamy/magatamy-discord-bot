@@ -1,4 +1,4 @@
-from config import custom_magatamy_guilds
+from config import magatamy_guilds
 
 from datetime import time
 from disnake import ApplicationCommandInteraction, TextChannel
@@ -19,7 +19,7 @@ TIMEZONES = ['UTC+0', 'UTC+1', 'UTC+2', 'UTC+3', 'UTC+4', 'UTC+5', 'UTC+6', 'UTC
 
 
 class CreateSaturdayChannel(commands.Cog):
-    @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION, guild_ids=custom_magatamy_guilds)
+    @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION, guild_ids=magatamy_guilds)
     @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
     async def create_saturday_channel(

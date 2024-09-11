@@ -13,3 +13,4 @@ class ButtonID(Enum):
     POST_REQUEST_VANILLA = "b-8"
     ACCEPT_REQUEST_VANILLA = "b-9"
     REJECT_REQUEST_VANILLA = "b-10"
+    CLEAR_SETTING = "b-11"

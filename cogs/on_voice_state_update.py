@@ -1,9 +1,9 @@
 import random
 
-from disnake import VoiceState, Member
+from disnake import VoiceState, Member, Option
 from disnake.ext import commands
 
-from modules.redis import GuildSettings, PrivateChannels
+from modules.redis import GuildSettings, PrivateChannels, Users
 from modules.generators import EmbedGenerator
 from modules.managers import LanguageManager
 
@@ -41,9 +41,18 @@ class OnVoiceStateUpdate(commands.Cog):
             await setting.load()
 
             if after.channel.id == setting.private_voice_channel_id and not member.bot:
+                user = Users(key=member.id)
+                await user.load()
+
+                channel_name = user.private_name if user.private_name else member.display_name
                 category = after.channel.guild.get_channel(setting.private_category_id)
-                voice_channel = await category.create_voice_channel(name=member.display_name)
+                voice_channel = await category.create_voice_channel(name=channel_name, user_limit=user.private_limit)
                 await member.move_to(channel=voice_channel)
+
+                overwrite = voice_channel.overwrites_for(voice_channel.guild.default_role)
+                overwrite.connect = user.private_close
+                overwrite.view_channel = user.private_hide
+                await voice_channel.set_permissions(target=voice_channel.guild.default_role, overwrite=overwrite)
 
                 private_channel = PrivateChannels(key=voice_channel.id)
                 private_channel.owner_id = member.id

@@ -4,16 +4,43 @@ CATEGORY_NAME = 'users'
 
 
 class Users(RedisObject):
-    __name_attribute = 'name'
+    __private_name_attribute = 'private_name'
+    __private_limit_attribute = 'private_limit'
+    __private_hide_attribute = 'private_hide'
+    __private_close_attribute = 'private_close'
 
     def __init__(self, key: int = None):
         """key is member_id"""
         super().__init__(category=CATEGORY_NAME, key=key)
 
     @property
-    def name(self) -> str:
-        return self._data.get(self.__name_attribute)
+    def private_name(self) -> str:
+        return self._data.get(self.__private_name_attribute)
 
-    @name.setter
-    def name(self, value: str):
-        self._data[self.__name_attribute] = value
+    @private_name.setter
+    def private_name(self, value: str):
+        self._data[self.__private_name_attribute] = value
+
+    @property
+    def private_limit(self) -> int:
+        return self._data.get(self.__private_limit_attribute)
+
+    @private_limit.setter
+    def private_limit(self, value: int):
+        self._data[self.__private_limit_attribute] = value
+
+    @property
+    def private_hide(self) -> bool:
+        return self._data.get(self.__private_hide_attribute)
+
+    @private_hide.setter
+    def private_hide(self, value: bool):
+        self._data[self.__private_hide_attribute] = value
+
+    @property
+    def private_close(self) -> bool:
+        return self._data.get(self.__private_close_attribute)
+
+    @private_close.setter
+    def private_close(self, value: bool):
+        self._data[self.__private_close_attribute] = value

@@ -1,12 +1,13 @@
-from mcrcon import MCRcon
-from config import custom_magatamy_request_vanilla_role, magatamy_host, magatamy_port, magatamy_password
 from disnake import MessageInteraction, InteractionResponse, PermissionOverwrite, Colour
 from disnake.ext import commands
+from mcrcon import MCRcon
+from config import magatamy_request_vanilla_role, magatamy_host, magatamy_port, magatamy_password
+from asyncio import wait_for, TimeoutError
 
 from modules.generators import EmbedGenerator
 from modules.redis import RequestVanilla, GuildSettings
-from modules.managers import LanguageManager
-from modules.enums import ButtonID, RequestStatus
+from modules.managers import LanguageManager, ErrorManager
+from modules.enums import ButtonID, RequestStatus, ErrorType
 from modules.modals import ModalRequestVanilla
 from modules.menus import MenuViewKickUser, MenuViewGetOwner, MenuViewMuteUser, MenuViewUserAccess
 
@@ -24,8 +25,11 @@ class OnButtonClickMagatamy(commands.Cog):
             ButtonID.REJECT_REQUEST_VANILLA.value: self.reject_request_vanilla
         }
         action = button_actions.get(inter.component.custom_id)
-        if action:
-            await action(inter, language)
+        try:
+            if action:
+                await wait_for(action(inter, language), timeout=5)
+        except TimeoutError:
+            await ErrorManager.error_handle(inter=inter, type_error=ErrorType.BUTTON_TIMEOUT.value, action=action)
 
     @staticmethod
     async def request_vanilla(inter: MessageInteraction, language: LanguageManager):
@@ -75,7 +79,7 @@ class OnButtonClickMagatamy(commands.Cog):
         embed.colour = Colour.green()
         await inter.message.edit(embed=embed, components=None)
 
-        role = inter.guild.get_role(custom_magatamy_request_vanilla_role)
+        role = inter.guild.get_role(request_vanilla_role)
         await member.add_roles(role)
 
         with MCRcon(magatamy_host, magatamy_password, magatamy_port) as mcr:

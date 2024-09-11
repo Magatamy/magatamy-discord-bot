@@ -1,10 +1,11 @@
-from config import custom_magatamy_request_channel
 from disnake import ModalInteraction, ButtonStyle
 from disnake.ext import commands
+from config import magatamy_request_channel
+from asyncio import wait_for, TimeoutError
 
 from modules.generators import EmbedGenerator
-from modules.managers import LanguageManager, ButtonManager
-from modules.enums import ModalID, ModalInputID, RequestStatus, ButtonID
+from modules.managers import LanguageManager, ButtonManager, ErrorManager
+from modules.enums import ModalID, ModalInputID, RequestStatus, ButtonID, ErrorType
 from modules.redis import RequestVanilla, GuildSettings
 
 
@@ -19,8 +20,11 @@ class OnModalSubmitMagatamy(commands.Cog):
             ModalID.REQUEST_VANILLA.value: self.request_vanilla
         }
         action = modal_actions.get(inter.custom_id)
-        if action:
-            await action(inter, language)
+        try:
+            if action:
+                await wait_for(action(inter, language), timeout=5)
+        except TimeoutError:
+            await ErrorManager.error_handle(inter=inter, type_error=ErrorType.MODAL_TIMEOUT.value, action=action)
 
     @staticmethod
     async def request_vanilla(inter: ModalInteraction, language: LanguageManager):
@@ -45,7 +49,7 @@ class OnModalSubmitMagatamy(commands.Cog):
         buttons.add_button(custom_id=ButtonID.ACCEPT_REQUEST_VANILLA.value, label=accept_label, style=ButtonStyle.green)
         buttons.add_button(custom_id=ButtonID.REJECT_REQUEST_VANILLA.value, label=reject_label, style=ButtonStyle.red)
 
-        request_channel = inter.guild.get_channel(custom_magatamy_request_channel)
+        request_channel = inter.guild.get_channel(magatamy_request_channel)
         await request_channel.send(embed=EmbedGenerator(
             json_schema=request_mod, label_name=label_name, name=name, label_nickname=label_nickname, nickname=nickname,
             label_info=label_info, info=info, label_action=label_action, action=action,label_rule=label_rule, rule=rule,

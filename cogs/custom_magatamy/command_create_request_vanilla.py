@@ -1,4 +1,4 @@
-from config import custom_magatamy_guilds
+from config import magatamy_guilds
 from disnake import ApplicationCommandInteraction
 from disnake.ext import commands
 
@@ -12,7 +12,7 @@ COMMAND_DESCRIPTION = Localized('create_request_vanilla_description')
 
 
 class CreateRequestVanilla(commands.Cog):
-    @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION, guild_ids=custom_magatamy_guilds)
+    @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION, guild_ids=magatamy_guilds)
     @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
     async def create_request_vanilla(self, inter: ApplicationCommandInteraction):

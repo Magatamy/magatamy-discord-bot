@@ -42,6 +42,7 @@ class CreatePrivateChannel(commands.Cog):
         buttons.add_button(custom_id=ButtonID.USER_ACCESS.value, emoji=Emoji.USER_ACCESS.value)
         buttons.add_button(custom_id=ButtonID.MUTE_USER.value, emoji=Emoji.MUTE_USER.value)
         buttons.add_button(custom_id=ButtonID.GET_OWNER.value, emoji=Emoji.GET_OWNER.value)
+        buttons.add_button(custom_id=ButtonID.CLEAR_SETTING.value, emoji=Emoji.CLEAR_SETTING.value)
 
         await text_channel.send(embed=EmbedGenerator(json_schema=channel_setting), components=buttons.components)
 

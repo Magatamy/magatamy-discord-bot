@@ -1,10 +1,11 @@
 from disnake import MessageInteraction, InteractionResponse, PermissionOverwrite
 from disnake.ext import commands
+from asyncio import wait_for, TimeoutError
 
 from modules.generators import EmbedGenerator
-from modules.redis import PrivateChannels, GuildSettings
-from modules.managers import LanguageManager
-from modules.enums import ButtonID
+from modules.redis import PrivateChannels, GuildSettings, Users
+from modules.managers import LanguageManager, ErrorManager
+from modules.enums import ButtonID, ErrorType
 from modules.modals import ModalChangeLimit, ModalChangeName
 from modules.menus import MenuViewKickUser, MenuViewGetOwner, MenuViewMuteUser, MenuViewUserAccess
 
@@ -24,11 +25,15 @@ class OnButtonClick(commands.Cog):
             ButtonID.HIDE_SHOW_ROOM.value: self.hide_show_room,
             ButtonID.MUTE_USER.value: self.mute_user,
             ButtonID.KICK_USER.value: self.kick_user,
-            ButtonID.GET_OWNER.value: self.get_owner
+            ButtonID.GET_OWNER.value: self.get_owner,
+            ButtonID.CLEAR_SETTING.value: self.clear_setting
         }
         action = button_actions.get(inter.component.custom_id)
-        if action:
-            await action(inter, language)
+        try:
+            if action:
+                await wait_for(action(inter, language), timeout=5)
+        except TimeoutError:
+            await ErrorManager.error_handle(inter=inter, type_error=ErrorType.BUTTON_TIMEOUT.value, action=action)
 
     async def change_name(self, inter: MessageInteraction, language: LanguageManager):
         private_channel = await self.check_and_get_private(inter=inter, language=language)
@@ -67,6 +72,10 @@ class OnButtonClick(commands.Cog):
             response = language.get_embed_data('open_room_response')
             overwrite.connect = None
 
+        user = Users(key=inter.author.id)
+        user.private_close = overwrite.connect
+        await user.save()
+
         await inter.author.voice.channel.set_permissions(target=inter.guild.default_role, overwrite=overwrite)
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
 
@@ -82,6 +91,10 @@ class OnButtonClick(commands.Cog):
         else:
             response = language.get_embed_data('show_room_response')
             overwrite.view_channel = None
+
+        user = Users(key=inter.author.id)
+        user.private_hide = overwrite.view_channel
+        await user.save()
 
         await inter.author.voice.channel.set_permissions(target=inter.guild.default_role, overwrite=overwrite)
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
@@ -115,6 +128,23 @@ class OnButtonClick(commands.Cog):
         view = MenuViewGetOwner(channel_id=inter.author.voice.channel.id, language=language)
 
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True, view=view)
+
+    async def clear_setting(self, inter: MessageInteraction, language: LanguageManager):
+        private_channel = await self.check_and_get_private(inter=inter, language=language)
+        if not private_channel:
+            return
+
+        user = Users(key=inter.author.id)
+        await user.delete()
+
+        overwrite = inter.author.voice.channel.overwrites_for(inter.guild.default_role)
+        overwrite.connect = None
+        overwrite.view_channel = None
+        await inter.author.voice.channel.set_permissions(target=inter.guild.default_role, overwrite=overwrite)
+        await inter.author.voice.channel.edit(name=inter.author.display_name, user_limit=None)
+
+        response = language.get_embed_data('clear_setting_response')
+        await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
 
     @staticmethod
     async def check_and_get_private(
