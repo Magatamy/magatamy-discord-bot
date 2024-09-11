@@ -40,6 +40,22 @@ class MenuKickUser(UserSelect):
             await user.voice.channel.send(
                 content=user.mention, embed=EmbedGenerator(json_schema=new_owner, member=user.display_name))
 
+            await inter.response.send_message(
+                embed=EmbedGenerator(json_schema=response, member=user.display_name), ephemeral=True)
+
+            overwrite = inter.author.voice.channel.overwrites_for(inter.guild.default_role)
+            if overwrite.speak is False:
+                overwrite_old_owner = inter.author.voice.channel.overwrites_for(inter.author)
+                overwrite_new_owner = inter.author.voice.channel.overwrites_for(user)
+                overwrite_old_owner.speak = None
+                overwrite_new_owner.speak = True
+                await inter.author.voice.channel.set_permissions(target=inter.author, overwrite=overwrite_old_owner)
+                await inter.author.voice.channel.set_permissions(target=user, overwrite=overwrite_new_owner)
+                await user.move_to(user.voice.channel)
+                await inter.author.move_to(inter.author.voice.channel)
+
+            return
+
         await inter.response.send_message(
             embed=EmbedGenerator(json_schema=response, member=user.display_name), ephemeral=True)
 

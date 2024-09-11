@@ -2,12 +2,11 @@ from disnake import MessageInteraction, InteractionResponse, PermissionOverwrite
 from disnake.ext import commands
 from mcrcon import MCRcon
 from config import magatamy_request_vanilla_role, magatamy_host, magatamy_port, magatamy_password
-from asyncio import wait_for, TimeoutError
 
 from modules.generators import EmbedGenerator
 from modules.redis import RequestVanilla, GuildSettings
-from modules.managers import LanguageManager, ErrorManager
-from modules.enums import ButtonID, RequestStatus, ErrorType
+from modules.managers import LanguageManager
+from modules.enums import ButtonID, RequestStatus
 from modules.modals import ModalRequestVanilla
 from modules.menus import MenuViewKickUser, MenuViewGetOwner, MenuViewMuteUser, MenuViewUserAccess
 
@@ -25,11 +24,8 @@ class OnButtonClickMagatamy(commands.Cog):
             ButtonID.REJECT_REQUEST_VANILLA.value: self.reject_request_vanilla
         }
         action = button_actions.get(inter.component.custom_id)
-        try:
-            if action:
-                await wait_for(action(inter, language), timeout=5)
-        except TimeoutError:
-            await ErrorManager.error_handle(inter=inter, type_error=ErrorType.BUTTON_TIMEOUT.value, action=action)
+        if action:
+            await action(inter, language)
 
     @staticmethod
     async def request_vanilla(inter: MessageInteraction, language: LanguageManager):

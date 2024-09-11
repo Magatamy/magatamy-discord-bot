@@ -1,11 +1,10 @@
 from disnake import ModalInteraction, ButtonStyle
 from disnake.ext import commands
 from config import magatamy_request_channel
-from asyncio import wait_for, TimeoutError
 
 from modules.generators import EmbedGenerator
-from modules.managers import LanguageManager, ButtonManager, ErrorManager
-from modules.enums import ModalID, ModalInputID, RequestStatus, ButtonID, ErrorType
+from modules.managers import LanguageManager, ButtonManager
+from modules.enums import ModalID, ModalInputID, RequestStatus, ButtonID
 from modules.redis import RequestVanilla, GuildSettings
 
 
@@ -20,11 +19,8 @@ class OnModalSubmitMagatamy(commands.Cog):
             ModalID.REQUEST_VANILLA.value: self.request_vanilla
         }
         action = modal_actions.get(inter.custom_id)
-        try:
-            if action:
-                await wait_for(action(inter, language), timeout=5)
-        except TimeoutError:
-            await ErrorManager.error_handle(inter=inter, type_error=ErrorType.MODAL_TIMEOUT.value, action=action)
+        if action:
+            await action(inter, language)
 
     @staticmethod
     async def request_vanilla(inter: ModalInteraction, language: LanguageManager):

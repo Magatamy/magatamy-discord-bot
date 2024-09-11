@@ -22,6 +22,7 @@ class CreateSaturdayChannel(commands.Cog):
     @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION, guild_ids=magatamy_guilds)
     @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
+    @commands.guild_only()
     async def create_saturday_channel(
             self,
             inter: ApplicationCommandInteraction,

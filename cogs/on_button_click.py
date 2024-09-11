@@ -1,16 +1,18 @@
 from disnake import MessageInteraction, InteractionResponse, PermissionOverwrite
 from disnake.ext import commands
-from asyncio import wait_for, TimeoutError
+from time import time
 
 from modules.generators import EmbedGenerator
 from modules.redis import PrivateChannels, GuildSettings, Users
-from modules.managers import LanguageManager, ErrorManager
-from modules.enums import ButtonID, ErrorType
+from modules.managers import LanguageManager, ButtonManager
+from modules.enums import ButtonID
 from modules.modals import ModalChangeLimit, ModalChangeName
 from modules.menus import MenuViewKickUser, MenuViewGetOwner, MenuViewMuteUser, MenuViewUserAccess
 
 
 class OnButtonClick(commands.Cog):
+    CLICK_TIMEOUT = 10000
+
     @commands.Cog.listener()
     async def on_button_click(self, inter: MessageInteraction):
         settings = GuildSettings(key=inter.guild.id)
@@ -26,14 +28,12 @@ class OnButtonClick(commands.Cog):
             ButtonID.MUTE_USER.value: self.mute_user,
             ButtonID.KICK_USER.value: self.kick_user,
             ButtonID.GET_OWNER.value: self.get_owner,
-            ButtonID.CLEAR_SETTING.value: self.clear_setting
+            ButtonID.CLEAR_SETTING.value: self.clear_setting,
+            ButtonID.MUTE_ALL_USER.value: self.mute_all_user
         }
         action = button_actions.get(inter.component.custom_id)
-        try:
-            if action:
-                await wait_for(action(inter, language), timeout=5)
-        except TimeoutError:
-            await ErrorManager.error_handle(inter=inter, type_error=ErrorType.BUTTON_TIMEOUT.value, action=action)
+        if action:
+            await action(inter, language)
 
     async def change_name(self, inter: MessageInteraction, language: LanguageManager):
         private_channel = await self.check_and_get_private(inter=inter, language=language)
@@ -141,16 +141,48 @@ class OnButtonClick(commands.Cog):
         overwrite.connect = None
         overwrite.view_channel = None
         await inter.author.voice.channel.set_permissions(target=inter.guild.default_role, overwrite=overwrite)
-        await inter.author.voice.channel.edit(name=inter.author.display_name, user_limit=None)
+        await inter.author.voice.channel.edit(user_limit=None)
 
         response = language.get_embed_data('clear_setting_response')
         await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
 
-    @staticmethod
-    async def check_and_get_private(
-            inter: MessageInteraction, language: LanguageManager) -> PrivateChannels | None:
-        error_not_in_voice, error_not_in_private, error_not_is_owner = language.get_embed_data(
-            ['error_private_not_in_voice', 'error_private_not_in_private', 'error_channel_not_is_owner'])
+    async def mute_all_user(self, inter: MessageInteraction, language: LanguageManager):
+        private_channel = await self.check_and_get_private(inter=inter, language=language)
+        if not private_channel:
+            return
+
+        overwrite = inter.author.voice.channel.overwrites_for(inter.guild.default_role)
+        overwrite_owner = inter.author.voice.channel.overwrites_for(inter.author)
+        if overwrite.speak is False:
+            overwrite.speak = None
+            overwrite_owner.speak = None
+            response = language.get_embed_data('unmute_all_user_response')
+        else:
+            overwrite.speak = False
+            overwrite_owner.speak = True
+            response = language.get_embed_data('mute_all_user_response')
+
+        await inter.author.voice.channel.set_permissions(target=inter.author, overwrite=overwrite_owner)
+        await inter.author.voice.channel.set_permissions(target=inter.guild.default_role, overwrite=overwrite)
+
+        for member in inter.author.voice.channel.members:
+            if member.id == inter.author.id:
+                continue
+            await member.move_to(member.voice.channel)
+
+        user = Users(key=inter.author.id)
+        user.private_mute_all = overwrite.speak
+        await user.save()
+
+        await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
+
+    async def check_and_get_private(self, inter: MessageInteraction, language: LanguageManager) -> PrivateChannels | None:
+        error_not_in_voice, error_not_in_private, error_not_is_owner, error_timeout = language.get_embed_data([
+            'error_private_not_in_voice',
+            'error_private_not_in_private',
+            'error_channel_not_is_owner',
+            'error_click_timeout'
+        ])
 
         if not inter.author.voice:
             await inter.response.send_message(embed=EmbedGenerator(json_schema=error_not_in_voice), ephemeral=True)
@@ -164,6 +196,21 @@ class OnButtonClick(commands.Cog):
         if private_channel.owner_id != inter.author.id:
             await inter.response.send_message(embed=EmbedGenerator(json_schema=error_not_is_owner), ephemeral=True)
             return
+
+        timestamp_now = int(time() * 1000)
+        user = Users(key=inter.author.id)
+        await user.load()
+
+        if user.last_click_button_ts:
+            timestamp_range = timestamp_now - user.last_click_button_ts
+            if timestamp_range < self.CLICK_TIMEOUT:
+                need_seconds = int((self.CLICK_TIMEOUT - timestamp_range) / 1000)
+                await inter.response.send_message(
+                    embed=EmbedGenerator(json_schema=error_timeout, range=need_seconds), ephemeral=True)
+                return
+
+        user.last_click_button_ts = timestamp_now
+        await user.save()
 
         return private_channel
 

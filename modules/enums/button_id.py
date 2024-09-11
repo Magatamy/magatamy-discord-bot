@@ -14,3 +14,4 @@ class ButtonID(Enum):
     ACCEPT_REQUEST_VANILLA = "b-9"
     REJECT_REQUEST_VANILLA = "b-10"
     CLEAR_SETTING = "b-11"
+    MUTE_ALL_USER = "b-12"

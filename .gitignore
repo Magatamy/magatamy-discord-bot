@@ -3,3 +3,4 @@
 /.idea
 database.db
 config.py
+cogs/custom_magatamy/

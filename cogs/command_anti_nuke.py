@@ -27,6 +27,7 @@ class CommandAntiNuke(commands.Cog):
     @commands.slash_command(name=COMMAND_NAME)
     @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
+    @commands.guild_only()
     async def anti_nuke(self, inter: ApplicationCommandInteraction):
         pass
 

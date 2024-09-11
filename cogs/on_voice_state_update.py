@@ -3,6 +3,7 @@ import random
 from disnake import VoiceState, Member, Option
 from disnake.ext import commands
 
+from modules.managers.button import message_settings_components
 from modules.redis import GuildSettings, PrivateChannels, Users
 from modules.generators import EmbedGenerator
 from modules.managers import LanguageManager
@@ -52,11 +53,28 @@ class OnVoiceStateUpdate(commands.Cog):
                 overwrite = voice_channel.overwrites_for(voice_channel.guild.default_role)
                 overwrite.connect = user.private_close
                 overwrite.view_channel = user.private_hide
+                overwrite.speak = user.private_mute_all
                 await voice_channel.set_permissions(target=voice_channel.guild.default_role, overwrite=overwrite)
 
+                if user.private_mute_all is False:
+                    overwrite = voice_channel.overwrites_for(member)
+                    overwrite.speak = True
+                    await voice_channel.set_permissions(target=member, overwrite=overwrite)
+
                 private_channel = PrivateChannels(key=voice_channel.id)
-                private_channel.owner_id = member.id
-                await private_channel.save()
+                if not voice_channel.members:
+                    await voice_channel.delete()
+                    await private_channel.delete()
+                else:
+                    private_channel.owner_id = member.id
+                    await private_channel.save()
+
+                    language = LanguageManager(locale=voice_channel.guild.preferred_locale, language=setting.language)
+                    channel_setting = language.get_embed_data('private_channel_setting')
+                    await voice_channel.send(
+                        content=member.mention,
+                        embed=EmbedGenerator(json_schema=channel_setting), components=message_settings_components()
+                    )
 
 
 def setup(client: commands.AutoShardedInteractionBot):

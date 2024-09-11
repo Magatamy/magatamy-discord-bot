@@ -1,18 +1,20 @@
 from disnake.ext import commands, tasks
 from datetime import datetime, timedelta
 from pytz import FixedOffset
+from config import BOOST_ROLE, INVITE_LINK, magatamy_guilds
 
 from modules.redis import SaturdayChannels, GuildSettings
 from modules.managers import LanguageManager
 from modules.generators import EmbedGenerator
 
 
-class Loops(commands.Cog):
+class LoopsMagatamy(commands.Cog):
     def __init__(self, client: commands.AutoShardedInteractionBot):
         self.client = client
         self.start_saturday.start()
+        self.check_boost_owners.start()
 
-    @tasks.loop(minutes=0.1)
+    @tasks.loop(minutes=1)
     async def start_saturday(self):
         saturdays = SaturdayChannels()
         await saturdays.load_all(limit=None)
@@ -50,10 +52,31 @@ class Loops(commands.Cog):
             await channel.set_permissions(target=channel.guild.default_role, overwrite=overwrite)
             await channel.send(embed=EmbedGenerator(json_schema=message))
 
+    @tasks.loop(minutes=30)
+    async def check_boost_owners(self):
+        main_guild = self.client.get_guild(magatamy_guilds[0])
+        boost_role = main_guild.get_role(BOOST_ROLE)
+
+        for guild in self.client.guilds:
+            if guild.id == main_guild.id:
+                continue
+
+            user_on_main_guild = main_guild.get_member(guild.owner.id)
+
+            if not user_on_main_guild or boost_role not in user_on_main_guild.roles:
+                language = LanguageManager(locale=guild.preferred_locale)
+                response = language.get_embed_data('not_boost_on_main_guild')
+                await guild.owner.send(content=INVITE_LINK, embed=EmbedGenerator(json_schema=response))
+                await guild.leave()
+
+    @check_boost_owners.before_loop
+    async def before_check_boost_owners(self):
+        await self.client.wait_until_ready()
+
     @start_saturday.before_loop
     async def before_start_saturday(self):
         await self.client.wait_until_ready()
 
 
 def setup(client: commands.AutoShardedInteractionBot):
-    client.add_cog(Loops(client))
+    client.add_cog(LoopsMagatamy(client))

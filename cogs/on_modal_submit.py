@@ -5,7 +5,7 @@ from asyncio import wait_for, TimeoutError
 from modules.redis import GuildSettings, Users
 from modules.generators import EmbedGenerator
 from modules.managers import LanguageManager, ErrorManager
-from modules.enums import ModalID, ModalInputID, ErrorType
+from modules.enums import ModalID, ModalInputID
 
 
 class OnModalSubmit(commands.Cog):
@@ -20,16 +20,17 @@ class OnModalSubmit(commands.Cog):
             ModalID.CHANGE_LIMIT.value: self.change_limit
         }
         action = modal_actions.get(inter.custom_id)
-        try:
-            if action:
-                await wait_for(action(inter, language), timeout=5)
-        except TimeoutError:
-            await ErrorManager.error_handle(inter=inter, type_error=ErrorType.MODAL_TIMEOUT.value, action=action)
+        if action:
+            await action(inter, language)
 
     @staticmethod
     async def change_name(inter: ModalInteraction, language: LanguageManager):
         new_name = inter.text_values.get(ModalInputID.CHANGE_NAME.value)
-        await inter.author.voice.channel.edit(name=new_name)
+        try:
+            await wait_for(inter.author.voice.channel.edit(name=new_name), timeout=1.5)
+        except TimeoutError as error:
+            await ErrorManager.error_handle(inter=inter, error=error)
+            return
 
         user = Users(key=inter.author.id)
         user.private_name = new_name

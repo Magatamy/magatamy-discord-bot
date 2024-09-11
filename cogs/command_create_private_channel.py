@@ -1,7 +1,8 @@
 from disnake import ApplicationCommandInteraction
 from disnake.ext import commands
 
-from modules.managers import Localized, LanguageManager, ButtonManager
+from modules.managers.button import message_settings_components
+from modules.managers import Localized, LanguageManager
 from modules.generators import EmbedGenerator
 from modules.redis import GuildSettings
 from modules.enums import ButtonID, Emoji
@@ -14,6 +15,7 @@ class CreatePrivateChannel(commands.Cog):
     @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION)
     @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
+    @commands.guild_only()
     async def create_private_channel(self, inter: ApplicationCommandInteraction):
         settings = GuildSettings(key=inter.guild.id)
         await settings.load()
@@ -33,18 +35,8 @@ class CreatePrivateChannel(commands.Cog):
         settings.private_voice_channel_id = voice_channel.id
         await settings.save()
 
-        buttons = ButtonManager()
-        buttons.add_button(custom_id=ButtonID.CHANGE_NAME.value, emoji=Emoji.CHANGE_NAME.value)
-        buttons.add_button(custom_id=ButtonID.NEW_LIMIT.value, emoji=Emoji.NEW_LIMIT.value)
-        buttons.add_button(custom_id=ButtonID.CLOSE_OPEN_ROOM.value, emoji=Emoji.CLOSE_OPEN_ROOM.value)
-        buttons.add_button(custom_id=ButtonID.HIDE_SHOW_ROOM.value, emoji=Emoji.HIDE_SHOW_ROOM.value)
-        buttons.add_button(custom_id=ButtonID.KICK_USER.value, emoji=Emoji.KICK_USER.value)
-        buttons.add_button(custom_id=ButtonID.USER_ACCESS.value, emoji=Emoji.USER_ACCESS.value)
-        buttons.add_button(custom_id=ButtonID.MUTE_USER.value, emoji=Emoji.MUTE_USER.value)
-        buttons.add_button(custom_id=ButtonID.GET_OWNER.value, emoji=Emoji.GET_OWNER.value)
-        buttons.add_button(custom_id=ButtonID.CLEAR_SETTING.value, emoji=Emoji.CLEAR_SETTING.value)
-
-        await text_channel.send(embed=EmbedGenerator(json_schema=channel_setting), components=buttons.components)
+        await text_channel.send(
+            embed=EmbedGenerator(json_schema=channel_setting), components=message_settings_components())
 
 
 def setup(client: commands.AutoShardedInteractionBot):

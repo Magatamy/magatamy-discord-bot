@@ -15,6 +15,7 @@ class Language(commands.Cog):
     @commands.slash_command(name=COMMAND_NAME, description=COMMAND_DESCRIPTION)
     @commands.cooldown(rate=2, per=10)
     @commands.has_permissions(administrator=True)
+    @commands.guild_only()
     async def language(
             self, inter: ApplicationCommandInteraction,
             language: str = commands.Param(
