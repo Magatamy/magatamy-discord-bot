@@ -1,4 +1,4 @@
-from ..redis_object import RedisObject
+from modules.redis.redis_object import RedisObject
 
 CATEGORY_NAME = 'users'
 

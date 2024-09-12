@@ -2,11 +2,6 @@
     "slash_commands": {
         "create_private_channel_name": "создать-приватку",
         "create_private_channel_description": "Создает категорию для приватных каналов",
-        "create_saturday_channel_name": "создать-субботник",
-        "create_saturday_channel_description": "Создает канал для субботника",
-        "create_saturday_channel_param_timezone_description": "Тайм зона по UTC",
-        "create_saturday_channel_param_hour_description": "Часы для старта субботника",
-        "create_saturday_channel_param_minute_description": "Минуты для старта субботника",
         "anti_nuke_name": "антинюк",
         "anti_nuke_block_role_name": "роль-блокировки",
         "anti_nuke_block_role_description": "Выставить роль для блокировки нарушителей",
@@ -20,16 +15,11 @@
         "anti_nuke_kick_protection_time_description": "Промежуток времени в секундах, для ограниченого кика пользователей",
         "anti_nuke_log_channel_name": "лог-канал",
         "anti_nuke_log_channel_description": "Канал для логов антинюка",
-        "create_request_vanilla_name": "создать-заявку-vanilla",
-        "create_request_vanilla_description": "Создает сообщение где можно подать заявку на Vanilla",
-        "remove_request_vanilla_name": "удалить-заявку-vanilla",
-        "remove_request_vanilla_description": "Удаляет заявку пользователя из бд",
         "language_name": "язык",
         "language_description": "Выбрать дефолтный язык для сервера дискорд",
         "language_param_description": "Список доступных языков"
     },
     "static_text": {
-        "button_request_vanilla": "Подать заявку",
         "private_category_name": "Приватные каналы",
         "private_text_channel_name": "\uD83D\uDCDC・управление",
         "private_voice_channel_name": "\uD83D\uDCE6・Создать",
@@ -42,22 +32,7 @@
         "modal_placeholder_change_limit": "от 1 до 99 (0 - бесконечно)",
         "modal_title_change_name": "Изменение названия",
         "modal_label_change_name": "Напишите имя для комнаты",
-        "modal_placeholder_change_name": "Говорилка...",
-        "modal_title_request_vanilla": "Заявка на Vanilla",
-        "modal_label_request_vanilla_name": "Ваше имя и возраст",
-        "modal_placeholder_request_vanilla_name": "Никита 21",
-        "modal_label_request_vanilla_nickname": "Ник в майнкрафт",
-        "modal_placeholder_request_vanilla_nickname": "MrBloodyCat",
-        "modal_label_request_vanilla_info": "Как узнали о проекте?",
-        "modal_placeholder_request_vanilla_info": "Введите ответ...",
-        "modal_label_request_vanilla_action": "Чем планируешь заниматься на сервере?",
-        "modal_placeholder_request_vanilla_action": "Введите ответ...",
-        "modal_label_request_vanilla_rule": "Вы прочитали правила?",
-        "modal_placeholder_request_vanilla_rule": "Введите ответ...",
-        "request_vanilla_accept_label": "Принять",
-        "request_vanilla_reject_label": "Отклонить",
-        "accept_request_label": "Принял: ",
-        "reject_request_label": "Отклонил:"
+        "modal_placeholder_change_name": "Говорилка..."
     },
     "error_private_not_in_voice": {
         "description": "Вы должны находиться в голосовом канале, чтобы использовать панель управления!",
@@ -175,21 +150,6 @@
     "user_access_response": {
         "description": "Выберите пользователя из списка. После этого он не сможет заходить в ваш приватный голосовой канал."
     },
-    "message_start_saturday": {
-        "title": "☀ Суббота стучится в двери, а значит пришло время скриншотного субботника!",
-        "description": "В этот день игроки могут продемонстрировать свой еженедельный прогресс сообществу нашего сервера\n\nДелимся наработками своих проектов!",
-        "image": "https://cdn.discordapp.com/attachments/1242813453232640120/1242818090769711134/1464_20240210175106.png?ex=66ba018b&is=66b8b00b&hm=9d7f01d3d256d2dc197ff9931c4087834966d72eb5f91df0b9cdf4c249e4bddf&",
-        "color": "0x98F5F9"
-    },
-    "message_end_saturday": {
-        "title": "☀ Суббота окончился!",
-        "description": "Встретимся в следующую субботу и посмотрим на ваши проекты.",
-        "color": "0x98F5F9"
-    },
-    "create_saturday_channel": {
-        "title": "Канал для субботника готов!",
-        "description": "- Вы можете переименовать канал.\n- Вы можете переместить канал.\n- Вы можете изменять параметры канала."
-    },
     "create_private_channel": {
         "title": "Категория приватных каналов почти готова!",
         "description": "- Вы можете переименовать каналы.\n- Вы можете перемещать каналы или категорию.\n- Вы можете изменять параметры каналов."
@@ -250,48 +210,6 @@
         "description": "`{user}({user_id})` был заблокирован за многочисленые **кики** на сервере",
         "color": "0x66cdaa"
     },
-    "create_request_vanilla": {
-        "title": "Заявка на сервер Vanilla",
-        "description": "**FAQ по заявке:**\n- Вся информация, указанная в заявке, является строго конфиденциальной.\n- Заявка будет осмотрена в течение 24 часов после подачи.\n- Если ваша заявка была отклонена, вы можете узнать причину отказа у администрации в дискорде.\n- Если ответ на вопрос в форме не полностью раскрыт, заявка будет отклонена.\n- При отклонении заявки вы в праве подать её повторно.\n\n*Если у вас есть вопросы, вы всегда можете их задать администрации в дискорде.*",
-        "image": "https://cdn.discordapp.com/attachments/1242813453232640120/1281674059796709467/1526_20231214225048.png?ex=66dc937c&is=66db41fc&hm=e3f5621a56d12c3471b7f209577c95cf62eee205c3abc92479ef05294cb8bea7&",
-        "color": "0x66cdaa"
-    },
-    "create_request_vanilla_response": {
-        "description": "Сообщение успешно создано!",
-        "color": "0x66cdaa"
-    },
-    "request_vanilla_accepted": {
-        "description": "Ваша заявка уже принята! незачем заполнять заявку снова.",
-        "color": "0x66cdaa"
-    },
-    "request_vanilla_under_review": {
-        "description": "Ваша заявка на рассмотрении! Когда модерация рассмотрит вашу заявку, вам напишет наш бот.",
-        "color": "0x66cdaa"
-    },
-    "request_vanilla_post": {
-        "description": "Ваша заявка была отправлена на расмотрение",
-        "color": "0x66cdaa"
-    },
-    "request_vanilla_mod": {
-        "title": "{user_id}",
-        "description": "**Заявка от {user_name} - {user_mention}**\n1. {label_name}\n`{name}`\n2. {label_nickname}\n`{nickname}`\n3. {label_info}\n`{info}`\n4. {label_action}\n`{action}`\n5. {label_rule}\n`{rule}`"
-    },
-    "reject_request_vanilla": {
-        "description": "Ваша заявка на сервер Vanilla на проекте Magatamy была отклонена!\nПодробную информацию о отказе можете узнать у Модерации проекта.",
-        "color": "0xff0000"
-    },
-    "accept_request_vanilla": {
-        "description": "Ваша заявка на сервер Vanilla на проекте Magatamy была принята!\nПриятной игры на нашем проекту, ip: `mc.magatamy.com`",
-        "color": "0x66cdaa"
-    },
-    "remove_request_vanilla": {
-        "description": "Заявка пользователя была удалена",
-        "color": "0x66cdaa"
-    },
-    "remove_request_vanilla_error": {
-        "description": "Заявку пользователя не удалось удалить",
-        "color": "0xff0000"
-    },
     "disable_language": {
         "description": "Дефолтный язык для дискорд сервера отключен",
         "color": "0x66cdaa"
@@ -330,10 +248,6 @@
     },
     "error_click_timeout": {
         "description": "Вы слишком часто используете кнопки. Попробуйте снова через `{range}` секунд.",
-        "color": "0xff0000"
-    },
-    "not_boost_on_main_guild": {
-        "description": "Бот не доступен так как у вас должна быть подписка **BOOST** на сервере проекта Magatamy",
         "color": "0xff0000"
     }
 }

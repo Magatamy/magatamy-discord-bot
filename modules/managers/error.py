@@ -2,8 +2,8 @@ from disnake import MessageInteraction, ModalInteraction
 from config import ERROR_LOG_CHANNEL, LANGUAGES_DEFAULT
 from asyncio import TimeoutError
 
-from .language import LanguageManager
-from ..generators import EmbedGenerator
+from modules.managers import LanguageManager
+from modules.generators import EmbedGenerator
 
 
 class ErrorManager:

@@ -1,24 +1,23 @@
 import disnake
 import os
 import json
-import aiofiles
 
-from config import LANGUAGES_DEFAULT
+from config import LANGUAGES_DEFAULT, LANGUAGES_DIRECTORY
 
 
 class Localized(disnake.Localized):
     def __init__(self, text_key: str):
-        default_file_path = f'languages/{LANGUAGES_DEFAULT}.json'
+        default_file_path = f'{LANGUAGES_DIRECTORY}/{LANGUAGES_DEFAULT}.json'
         with open(default_file_path, encoding='utf-8-sig') as default_file:
             default_json = json.load(default_file)
         string = default_json.get('slash_commands', {}).get(text_key, '')
 
         translations = {}
 
-        for filename in os.listdir('languages'):
+        for filename in os.listdir(LANGUAGES_DIRECTORY):
             lang_name, ext = os.path.splitext(filename)
             if ext == '.json' and lang_name != LANGUAGES_DEFAULT:
-                lang_file_path = os.path.join('languages', filename)
+                lang_file_path = os.path.join(LANGUAGES_DIRECTORY, filename)
                 with open(lang_file_path, encoding='utf-8-sig') as lang_file:
                     lang_json = json.load(lang_file)
                 translations[lang_name] = lang_json.get('slash_commands', {}).get(text_key, '')
@@ -28,9 +27,9 @@ class Localized(disnake.Localized):
     @staticmethod
     def load_all_language_data() -> dict:
         data = {}
-        for filename in os.listdir('languages'):
+        for filename in os.listdir(LANGUAGES_DIRECTORY):
             lang_name, ext = os.path.splitext(filename)
-            locale_path = f'languages/{filename}'
+            locale_path = f'{LANGUAGES_DIRECTORY}/{filename}'
             with open(locale_path, encoding='utf-8') as file:
                 json_data = json.loads(file.read())
             data.update({lang_name: json_data})

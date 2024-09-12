@@ -1,6 +1,8 @@
 **/__pycache__/
-.vscode
 /.idea
-database.db
+.vscode
 config.py
-cogs/custom_magatamy/
+
+cogs/custom_cogs
+custom_languages
+custom_modules

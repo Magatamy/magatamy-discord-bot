@@ -3,13 +3,15 @@ import redis.asyncio as async_redis
 
 from time import time
 from config import REDIS_HOST, REDIS_POST, REDIS_PASSWORD
-from ..enums.convert_value import ConvertValue
+from modules.enums import ConvertValue
+
+DEFAULT_CATEGORY_NAME = 'default_category'
 
 
 class RedisObject:
     __redis = async_redis.Redis(host=REDIS_HOST, port=REDIS_POST, password=REDIS_PASSWORD)
 
-    def __init__(self, category: str = 'default_category', key: str | int = None):
+    def __init__(self, category: str = DEFAULT_CATEGORY_NAME, key: str | int = None):
         self._category = category
         self._key = key
         self._data = {}

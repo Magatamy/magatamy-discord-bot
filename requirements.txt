@@ -1,0 +1,7 @@
+aiofiles==24.1.0
+aiosqlite==0.20.0
+asyncio==3.4.3
+disnake==2.9.2
+htmlwebshot==0.1.2
+pytz==2024.1
+redis==5.0.8

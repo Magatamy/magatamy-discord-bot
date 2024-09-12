@@ -1,5 +1,4 @@
-from ..redis_object import RedisObject
-from time import time
+from modules.redis.redis_object import RedisObject
 
 CATEGORY_NAME = 'anti_nuke'
 
