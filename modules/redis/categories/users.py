@@ -9,7 +9,6 @@ class Users(RedisObject):
     __private_hide_attribute = 'private_hide'
     __private_close_attribute = 'private_close'
     __private_mute_all_attribute = 'private_mute_all'
-    __last_click_button_ts_attribute = 'last_click_button_ts'
 
     def __init__(self, key: int = None):
         """key is member_id"""
@@ -54,11 +53,3 @@ class Users(RedisObject):
     @private_mute_all.setter
     def private_mute_all(self, value: bool):
         self._data[self.__private_mute_all_attribute] = value
-
-    @property
-    def last_click_button_ts(self) -> int:
-        return self._data.get(self.__last_click_button_ts_attribute)
-
-    @last_click_button_ts.setter
-    def last_click_button_ts(self, value: int):
-        self._data[self.__last_click_button_ts_attribute] = value

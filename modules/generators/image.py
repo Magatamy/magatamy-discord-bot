@@ -33,13 +33,13 @@ class ImageGenerator(WebShot):
     def temp_image(self) -> str:
         return f'images/temp/{self.id}.png'
 
-    def _clear_files(self, clear: bool, image_path: str):
+    def __clear_files(self, clear: bool, image_path: str):
         if clear and os.path.exists(image_path):
             os.remove(image_path)
         if os.path.exists(self.temp_html):
             os.remove(self.temp_html)
 
-    async def _generic_image_files(self):
+    async def __generic_image_files(self):
         path = f'images/generic/{self.image_key}.html'
         async with aiofiles.open(path, 'r') as file:
             content = await file.read()
@@ -49,7 +49,7 @@ class ImageGenerator(WebShot):
             await temp_file.write(image_html)
 
     async def get_image_file(self, clear: bool = True) -> File:
-        await self._generic_image_files()
+        await self.__generic_image_files()
         image_path = await self.create_pic_async(url=self.temp_html, output=self.temp_image)
 
         try:
@@ -58,4 +58,4 @@ class ImageGenerator(WebShot):
                 image_stream = BytesIO(image_data)
                 return File(fp=image_stream, filename=os.path.basename(image_path))
         finally:
-            self._clear_files(clear=clear, image_path=image_path)
+            self.__clear_files(clear=clear, image_path=image_path)

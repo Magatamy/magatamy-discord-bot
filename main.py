@@ -32,8 +32,9 @@ if __name__ == '__main__':
         test_guilds=TEST_GUILDS,
         activity=Activity(name=ACTIVITY_NAME, type=ActivityType.playing),
         intents=get_intents(),
+        reload=True,
         chunk_guilds_at_startup=True
     )
-    client.start_time = int(time.time())
+    client.start_time = int(time.time() * 1000)
     load_extensions(client.load_extension)
     client.run(BOT_TOKEN)

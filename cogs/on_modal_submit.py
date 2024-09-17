@@ -1,11 +1,9 @@
 from disnake import ModalInteraction
 from disnake.ext import commands
-from asyncio import wait_for, TimeoutError
 
-from modules.redis import GuildSettings, Users
-from modules.generators import EmbedGenerator
-from modules.managers import LanguageManager, ErrorManager
-from modules.enums import ModalID, ModalInputID
+from modules.redis import GuildSettings
+from modules.managers import LanguageManager
+from utils.modal_hendlers.modal_mapping import get_modal_actions
 
 
 class OnModalSubmit(commands.Cog):
@@ -15,45 +13,9 @@ class OnModalSubmit(commands.Cog):
         await settings.load()
 
         language = LanguageManager(locale=inter.locale, language=settings.language)
-        modal_actions = {
-            ModalID.CHANGE_NAME.value: self.change_name,
-            ModalID.CHANGE_LIMIT.value: self.change_limit
-        }
-        action = modal_actions.get(inter.custom_id)
+        action = get_modal_actions().get(inter.custom_id)
         if action:
             await action(inter, language)
-
-    @staticmethod
-    async def change_name(inter: ModalInteraction, language: LanguageManager):
-        new_name = inter.text_values.get(ModalInputID.CHANGE_NAME.value)
-        try:
-            await wait_for(inter.author.voice.channel.edit(name=new_name), timeout=1.5)
-        except TimeoutError as error:
-            await ErrorManager.error_handle(inter=inter, error=error)
-            return
-
-        user = Users(key=inter.author.id)
-        user.private_name = new_name
-        await user.save()
-
-        response = language.get_embed_data('change_name_response')
-        await inter.response.send_message(embed=EmbedGenerator(json_schema=response, name=new_name), ephemeral=True)
-
-    @staticmethod
-    async def change_limit(inter: ModalInteraction, language: LanguageManager):
-        new_limit = inter.text_values.get(ModalInputID.CHANGE_LIMIT.value)
-
-        if not new_limit.isdigit() or not (0 <= int(new_limit) <= 99):
-            response = language.get_embed_data('error_change_limit_value')
-        else:
-            await inter.author.voice.channel.edit(user_limit=new_limit)
-            response = language.get_embed_data('change_limit_response')
-
-            user = Users(key=inter.author.id)
-            user.private_limit = new_limit
-            await user.save()
-
-        await inter.response.send_message(embed=EmbedGenerator(json_schema=response, limit=new_limit), ephemeral=True)
 
 
 def setup(client: commands.AutoShardedInteractionBot):

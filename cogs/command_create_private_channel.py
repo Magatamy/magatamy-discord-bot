@@ -1,11 +1,11 @@
 from disnake import ApplicationCommandInteraction
 from disnake.ext import commands
 
-from modules.managers.button import message_settings_components
 from modules.managers import Localized, LanguageManager
 from modules.generators import EmbedGenerator
 from modules.redis import GuildSettings
 from modules.enums import ButtonID, Emoji
+from utils.buttons.message_settings_components import get_components
 
 COMMAND_NAME = Localized('create_private_channel_name')
 COMMAND_DESCRIPTION = Localized('create_private_channel_description')
@@ -36,7 +36,7 @@ class CreatePrivateChannel(commands.Cog):
         await settings.save()
 
         await text_channel.send(
-            embed=EmbedGenerator(json_schema=channel_setting), components=message_settings_components())
+            embed=EmbedGenerator(json_schema=channel_setting), components=get_components())
 
 
 def setup(client: commands.AutoShardedInteractionBot):

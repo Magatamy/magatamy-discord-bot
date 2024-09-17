@@ -3,10 +3,11 @@ import random
 from disnake import VoiceState, Member, Option
 from disnake.ext import commands
 
-from modules.managers.button import message_settings_components
 from modules.redis import GuildSettings, PrivateChannels, Users
 from modules.generators import EmbedGenerator
 from modules.managers import LanguageManager
+
+from utils.buttons.message_settings_components import get_components
 
 
 class OnVoiceStateUpdate(commands.Cog):
@@ -72,9 +73,7 @@ class OnVoiceStateUpdate(commands.Cog):
                     language = LanguageManager(locale=voice_channel.guild.preferred_locale, language=setting.language)
                     channel_setting = language.get_embed_data('private_channel_setting')
                     await voice_channel.send(
-                        content=member.mention,
-                        embed=EmbedGenerator(json_schema=channel_setting), components=message_settings_components()
-                    )
+                        embed=EmbedGenerator(json_schema=channel_setting), components=get_components())
 
 
 def setup(client: commands.AutoShardedInteractionBot):

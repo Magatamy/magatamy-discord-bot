@@ -2,14 +2,14 @@ import redis as sync_redis
 import redis.asyncio as async_redis
 
 from time import time
-from config import REDIS_HOST, REDIS_POST, REDIS_PASSWORD
+from config import REDIS_HOST, REDIS_PORT, REDIS_PASSWORD
 from modules.enums import ConvertValue
 
 DEFAULT_CATEGORY_NAME = 'default_category'
 
 
 class RedisObject:
-    __redis = async_redis.Redis(host=REDIS_HOST, port=REDIS_POST, password=REDIS_PASSWORD)
+    __redis = async_redis.Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD)
 
     def __init__(self, category: str = DEFAULT_CATEGORY_NAME, key: str | int = None):
         self._category = category
@@ -149,9 +149,13 @@ class RedisObject:
         if self._data:
             return True
 
-    async def save(self, key: str | int = None) -> bool:
+    async def save(self, key: str | int = None, time_to_live: int = None) -> bool:
         key = self._key if key is None else key
-        result = await self.__redis.hset(f'{self._category}:{key}', mapping=self.__convert_data())
+        hash_key = f'{self._category}:{key}'
+
+        result = await self.__redis.hset(name=hash_key, mapping=self.__convert_data())
+        if result and time_to_live:
+            await self.__redis.expire(name=hash_key, time=time_to_live)
 
         if result:
             return True
@@ -162,3 +166,10 @@ class RedisObject:
 
         if result:
             return True
+
+    async def get_time_to_live(self, key: str | int = None) -> int:
+        key = self._key if key is None else key
+        ttl = await self.__redis.ttl(f'{self._category}:{key}')
+
+        if ttl != -2:
+            return ttl

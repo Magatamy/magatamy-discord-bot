@@ -2,22 +2,11 @@
     "slash_commands": {
         "create_private_channel_name": "создать-приватку",
         "create_private_channel_description": "Создает категорию для приватных каналов",
-        "anti_nuke_name": "антинюк",
-        "anti_nuke_block_role_name": "роль-блокировки",
-        "anti_nuke_block_role_description": "Выставить роль для блокировки нарушителей",
-        "anti_nuke_ban_protection_name": "бан-защита",
-        "anti_nuke_ban_protection_description": "Блокирует пользователя при масовом бане",
-        "anti_nuke_ban_protection_count_description": "Количество доступных банов за период времени",
-        "anti_nuke_ban_protection_time_description": "Промежуток времени в секундах, для ограниченого бана пользователей",
-        "anti_nuke_kick_protection_name": "кик-защита",
-        "anti_nuke_kick_protection_description": "Блокирует пользователя при масовом кике",
-        "anti_nuke_kick_protection_count_description": "Количество доступных киков за период времени",
-        "anti_nuke_kick_protection_time_description": "Промежуток времени в секундах, для ограниченого кика пользователей",
-        "anti_nuke_log_channel_name": "лог-канал",
-        "anti_nuke_log_channel_description": "Канал для логов антинюка",
         "language_name": "язык",
         "language_description": "Выбрать дефолтный язык для сервера дискорд",
-        "language_param_description": "Список доступных языков"
+        "language_param_description": "Список доступных языков",
+        "create_giveaway_name": "создать-раздачу",
+        "create_giveaway_description": "Создает панель дня создания раздачи"
     },
     "static_text": {
         "private_category_name": "Приватные каналы",
@@ -32,7 +21,11 @@
         "modal_placeholder_change_limit": "от 1 до 99 (0 - бесконечно)",
         "modal_title_change_name": "Изменение названия",
         "modal_label_change_name": "Напишите имя для комнаты",
-        "modal_placeholder_change_name": "Говорилка..."
+        "modal_placeholder_change_name": "Говорилка...",
+        "giveaway_example_title": "<заголовок>",
+        "giveaway_example_description": "<описание>",
+        "giveaway_example_footer_text": "<постскриптум>",
+        "giveaway_example_color_embed": "66cdaa"
     },
     "error_private_not_in_voice": {
         "description": "Вы должны находиться в голосовом канале, чтобы использовать панель управления!",
@@ -170,46 +163,6 @@
             }
         ]
     },
-    "anti_nuke_block_role_error": {
-        "description": "Эта роль уже установлена для блокировки!",
-        "color": "0xff0000"
-    },
-    "anti_nuke_log_channel_error": {
-        "description": "Этот канал уже установлен для логов антинюка!",
-        "color": "0xff0000"
-    },
-    "anti_nuke_block_role": {
-        "description": "Роль для блокировки успешно установлена",
-        "color": "0x66cdaa"
-    },
-    "anti_nuke_ban_protection": {
-        "description": "Защита от банов установлена! При {count} банов от пользователя в течении {time} секунд, заблокирует пользователя.",
-        "color": "0x66cdaa"
-    },
-    "anti_nuke_kick_protection": {
-        "description": "Защита от киков установлена! При {count} киков от пользователя в течении {time} секунд, заблокирует пользователя.",
-        "color": "0x66cdaa"
-    },
-    "anti_nuke_log_channel": {
-        "description": "Канал для логов антинюка успешно установлен",
-        "color": "0x66cdaa"
-    },
-    "anti_nuke_ban_blocked": {
-        "description": "Вы были заблокированы за многочисленые **баны** на сервере!",
-        "color": "0x66cdaa"
-    },
-    "anti_nuke_kick_blocked": {
-        "description": "Вы были заблокированы за многочисленые **кики** на сервере!",
-        "color": "0x66cdaa"
-    },
-    "anti_nuke_ban_blocked_log": {
-        "description": "`{user}({user_id})` был заблокирован за многочисленые **баны** на сервере",
-        "color": "0x66cdaa"
-    },
-    "anti_nuke_kick_blocked_log": {
-        "description": "`{user}({user_id})` был заблокирован за многочисленые **кики** на сервере",
-        "color": "0x66cdaa"
-    },
     "disable_language": {
         "description": "Дефолтный язык для дискорд сервера отключен",
         "color": "0x66cdaa"
@@ -249,5 +202,27 @@
     "error_click_timeout": {
         "description": "Вы слишком часто используете кнопки. Попробуйте снова через `{range}` секунд.",
         "color": "0xff0000"
+    },
+    "create_giveaway_settings": {
+        "description": "Тут типо настройка раздачи",
+        "color": "0x66cdaa"
+    },
+    "create_giveaway_example": {
+        "title": "{title}",
+        "description": "{description}",
+        "footer_text": "{footer_text}",
+        "color": "0x{color_embed}",
+        "fields": [
+            {
+            "name": "⏰ Время окончания:",
+            "value": "<t:{end_time}:R> (<t:{end_time}:F>)",
+            "inline": false
+            },
+            {
+            "name": "",
+            "value": "\uD83C\uDFC6 **Победителей всего:** `{count_winners}`\n\uD83D\uDC65 **Участников:** `{count_participants}`",
+            "inline": false
+            }
+        ]
     }
 }
