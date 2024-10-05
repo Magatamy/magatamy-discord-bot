@@ -2,19 +2,21 @@ import redis as sync_redis
 import redis.asyncio as async_redis
 
 from time import time
-from config import REDIS_HOST, REDIS_PORT, REDIS_PASSWORD
+from copy import deepcopy
+from config import REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, NUMBER_BD
 from modules.enums import ConvertValue
 
 DEFAULT_CATEGORY_NAME = 'default_category'
 
 
 class RedisObject:
-    __redis = async_redis.Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD)
+    __redis = async_redis.Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, db=NUMBER_BD)
 
     def __init__(self, category: str = DEFAULT_CATEGORY_NAME, key: str | int = None):
         self._category = category
         self._key = key
         self._data = {}
+        self.__loaded_data = {}
 
     def __iter__(self):
         self._iter_index = 0
@@ -26,6 +28,7 @@ class RedisObject:
             key_value = keys[self._iter_index]
             new_object = type(self)(key=key_value.split(':')[-1])
             new_object._data = self._data[key_value]
+            new_object.__loaded_data = deepcopy(new_object._data)
             self._iter_index += 1
             return new_object
         else:
@@ -45,9 +48,10 @@ class RedisObject:
         else:
             return value
 
-    def __convert_data(self) -> dict:
+    @staticmethod
+    def __convert_data(data) -> dict:
         converted_data = {}
-        for key, value in self._data.items():
+        for key, value in data.items():
             if isinstance(value, bool):
                 converted_data[key] = ConvertValue.TRUE.value if value else ConvertValue.FALSE.value
             elif value is None:
@@ -94,6 +98,7 @@ class RedisObject:
         key = self._key if key is None else key
         result = await self.__redis.hgetall(name=f'{self._category}:{key}')
         self._data = {k.decode('utf-8'): self.__process_value(v) for k, v in result.items()}
+        self.__loaded_data = deepcopy(self._data)
 
         if self._data:
             return True
@@ -110,8 +115,8 @@ class RedisObject:
         if self._data:
             return True
 
-    async def load_for_time(self, range_ms: int, timestamp_key: str, limit: int | None = 100) -> bool:
-        timestamp_by_range = int(time() * 1000) - range_ms
+    async def load_for_time(self, time_range: int, timestamp_field: str, limit: int | None = 100) -> bool:
+        timestamp_by_range = int(time() * 1000) - time_range
         self._data = {}
         all_keys = await self.__get_all_keys()
 
@@ -120,17 +125,17 @@ class RedisObject:
             result = await self.__redis.hgetall(key)
             data = {k.decode('utf-8'): self.__process_value(v) for k, v in result.items()}
 
-            timestamp = data.get(timestamp_key)
+            timestamp = data.get(timestamp_field)
             if timestamp and isinstance(timestamp, int) and timestamp >= timestamp_by_range:
                 self._data[key] = data
 
         if limit:
-            self._data = self._data[:limit]
+            self._data = dict(list(self._data.items())[:limit])
 
         if self._data:
             return True
 
-    async def load_sorted(self, sort_field: str, limit: int | None = 100):
+    async def load_sorted(self, sort_field: str, reverse_sorted: bool = False, limit: int | None = 100):
         self._data = {}
         all_keys = await self.__get_all_keys()
 
@@ -140,11 +145,14 @@ class RedisObject:
             data = {k.decode('utf-8'): self.__process_value(v) for k, v in result.items()}
 
             if sort_field in data:
-                self._data.append(data)
+                self._data[key] = data
 
-        self._data = sorted(self._data, key=lambda x: x[sort_field])
+        list_data = list(self._data.items())
+        sorted_list_data = sorted(list_data, key=lambda item: item[1][sort_field], reverse=reverse_sorted)
         if limit:
-            self._data = self._data[:limit]
+            sorted_list_data = sorted_list_data[:limit]
+
+        self._data = dict(sorted_list_data)
 
         if self._data:
             return True
@@ -153,7 +161,15 @@ class RedisObject:
         key = self._key if key is None else key
         hash_key = f'{self._category}:{key}'
 
-        result = await self.__redis.hset(name=hash_key, mapping=self.__convert_data())
+        changed_data = {
+            key: self._data[key] for key in self._data
+            if self._data[key] != self.__loaded_data.get(key)
+        } if self.__loaded_data else self._data
+        
+        if not changed_data:
+            return False
+
+        result = await self.__redis.hset(name=hash_key, mapping=self.__convert_data(data=changed_data))
         if result and time_to_live:
             await self.__redis.expire(name=hash_key, time=time_to_live)
 

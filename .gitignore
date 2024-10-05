@@ -6,3 +6,4 @@ config.py
 cogs/custom_cogs
 custom_languages
 custom_modules
+custom_utils

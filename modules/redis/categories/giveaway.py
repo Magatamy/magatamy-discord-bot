@@ -6,17 +6,17 @@ CATEGORY_NAME = 'giveaway'
 class Giveaway(RedisObject):
     __title_attribute = 'title'
     __description_attribute = 'description'
-    __winners_attribute = 'count_winners'
-    __status_attribute = 'status'
-    __end_timestamp_attribute = 'end_timestamp'
-    __winner_role_id_attribute = 'winner_role_id'
-    __participants_attribute = 'participants'
-    __message_to_winner_attribute = 'message_to_winner'
-    __color_embed_attribute = 'color_embed'
     __footer_text_attribute = 'footer_text'
+    __color_embed_attribute = 'color_embed'
+    __end_timestamp_attribute = 'end_timestamp'
+    __winners_attribute = 'count_winners'
+    __winner_role_id_attribute = 'winner_role_id'
+    __message_to_winner_attribute = 'message_to_winner'
+    __participants_attribute = 'participants'
 
     def __init__(self, key: int = None):
         """key is message_id"""
+        self.key = key
         super().__init__(category=CATEGORY_NAME, key=key)
 
     @property

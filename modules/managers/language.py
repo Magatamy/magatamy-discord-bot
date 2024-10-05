@@ -57,7 +57,7 @@ class LanguageManager:
             return [language_data.get(key, '') for key in slash_command_key]
         return language_data.get(slash_command_key, '')
 
-    def get_static(self, text_key: str | list) -> str | list:
+    def get_static(self, text_key: str | list) -> str | list[str]:
         language_data = self._data.get('static_text')
         if isinstance(text_key, list):
             return [language_data.get(key, '') for key in text_key]

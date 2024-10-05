@@ -3,12 +3,13 @@ from disnake import MessageInteraction
 from modules.generators import EmbedGenerator
 from modules.redis import PrivateChannels, Users
 from modules.managers import LanguageManager
-from modules.modals import ModalChangeLimit, ModalChangeName
-from modules.menus import MenuViewKickUser, MenuViewGetOwner, MenuViewMuteUser, MenuViewUserAccess
 from modules.decorators import click_timeout
 
+from utils.modals import ModalChangeLimit, ModalChangeName
+from utils.menus import MenuViewKickUser, MenuViewGetOwner, MenuViewMuteUser, MenuViewUserAccess
 
-@click_timeout(timeout_duration=5)
+
+@click_timeout(timeout_duration=3)
 async def change_name(inter: MessageInteraction, language: LanguageManager):
     private_channel = await check_and_get_private(inter=inter, language=language)
     if not private_channel:
@@ -17,7 +18,7 @@ async def change_name(inter: MessageInteraction, language: LanguageManager):
     await inter.response.send_modal(ModalChangeName(language=language))
 
 
-@click_timeout(timeout_duration=5)
+@click_timeout(timeout_duration=3)
 async def new_limit(inter: MessageInteraction, language: LanguageManager):
     private_channel = await check_and_get_private(inter=inter, language=language)
     if not private_channel:
@@ -26,7 +27,7 @@ async def new_limit(inter: MessageInteraction, language: LanguageManager):
     await inter.response.send_modal(ModalChangeLimit(language=language))
 
 
-@click_timeout(timeout_duration=5)
+@click_timeout(timeout_duration=3)
 async def user_access(inter: MessageInteraction, language: LanguageManager):
     private_channel = await check_and_get_private(inter=inter, language=language)
     if not private_channel:
@@ -38,7 +39,7 @@ async def user_access(inter: MessageInteraction, language: LanguageManager):
     await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True, view=view)
 
 
-@click_timeout(timeout_duration=5)
+@click_timeout(timeout_duration=3)
 async def open_close_room(inter: MessageInteraction, language: LanguageManager):
     private_channel = await check_and_get_private(inter=inter, language=language)
     if not private_channel:
@@ -60,7 +61,7 @@ async def open_close_room(inter: MessageInteraction, language: LanguageManager):
     await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
 
 
-@click_timeout(timeout_duration=5)
+@click_timeout(timeout_duration=3)
 async def hide_show_room(inter: MessageInteraction, language: LanguageManager):
     private_channel = await check_and_get_private(inter=inter, language=language)
     if not private_channel:
@@ -82,7 +83,7 @@ async def hide_show_room(inter: MessageInteraction, language: LanguageManager):
     await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
 
 
-@click_timeout(timeout_duration=5)
+@click_timeout(timeout_duration=3)
 async def mute_user(inter: MessageInteraction, language: LanguageManager):
     private_channel = await check_and_get_private(inter=inter, language=language)
     if not private_channel:
@@ -94,7 +95,7 @@ async def mute_user(inter: MessageInteraction, language: LanguageManager):
     await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True, view=view)
 
 
-@click_timeout(timeout_duration=5)
+@click_timeout(timeout_duration=3)
 async def kick_user(inter: MessageInteraction, language: LanguageManager):
     private_channel = await check_and_get_private(inter=inter, language=language)
     if not private_channel:
@@ -106,7 +107,7 @@ async def kick_user(inter: MessageInteraction, language: LanguageManager):
     await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True, view=view)
 
 
-@click_timeout(timeout_duration=5)
+@click_timeout(timeout_duration=3)
 async def get_owner(inter: MessageInteraction, language: LanguageManager):
     private_channel = await check_and_get_private(inter=inter, language=language)
     if not private_channel:
@@ -118,7 +119,7 @@ async def get_owner(inter: MessageInteraction, language: LanguageManager):
     await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True, view=view)
 
 
-@click_timeout(timeout_duration=5)
+@click_timeout(timeout_duration=3)
 async def clear_setting(inter: MessageInteraction, language: LanguageManager):
     private_channel = await check_and_get_private(inter=inter, language=language)
     if not private_channel:
@@ -137,7 +138,7 @@ async def clear_setting(inter: MessageInteraction, language: LanguageManager):
     await inter.response.send_message(embed=EmbedGenerator(json_schema=response), ephemeral=True)
 
 
-@click_timeout(timeout_duration=5)
+@click_timeout(timeout_duration=3)
 async def mute_all_user(inter: MessageInteraction, language: LanguageManager):
     private_channel = await check_and_get_private(inter=inter, language=language)
     if not private_channel:

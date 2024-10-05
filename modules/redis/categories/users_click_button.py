@@ -8,6 +8,7 @@ class UsersClickButton(RedisObject):
 
     def __init__(self, key: int = None):
         """key is member_id"""
+        self.key = key
         super().__init__(category=CATEGORY_NAME, key=key)
 
     @property
