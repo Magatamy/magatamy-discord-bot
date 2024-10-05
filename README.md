@@ -13,6 +13,7 @@ BOT_TOKEN = 'your_bot_token'
 REDIS_HOST = 'redis_server_address'
 REDIS_PORT = 6379  # Default port for Redis
 REDIS_PASSWORD = 'redis_server_password'
+NUMBER_BD = 0 # Max number db 16 in default Redis config
 ACTIVITY_NAME = 'activity_name'
 LANGUAGES_DIRECTORY = 'languages' # Default directory in project
 LANGUAGES_DEFAULT = 'default_language'  # Language name from language files
