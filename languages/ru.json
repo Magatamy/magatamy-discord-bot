@@ -2,6 +2,8 @@
     "slash_commands": {
         "create_private_channel_name": "создать-приватку",
         "create_private_channel_description": "Создает категорию для приватных каналов",
+        "help_name": "помощь",
+        "help_description": "Информация о боте",
         "language_name": "язык",
         "language_description": "Выбрать дефолтный язык для сервера дискорд",
         "language_param_description": "Список доступных языков",
@@ -146,6 +148,11 @@
     "create_private_channel": {
         "title": "Категория приватных каналов почти готова!",
         "description": "- Вы можете переименовать каналы.\n- Вы можете перемещать каналы или категорию.\n- Вы можете изменять параметры каналов."
+    },
+    "help": {
+        "title": "Помощь",
+        "description": "### **Полезная информация**\n> {owners} Серверов: {lenght_guilds}\n> Разработчик: **lisik.me**, **mrbloodycat**\n### **Команды приложения**\n> /{command_help} - ` {command_help_description} `\n\n-# Powered by MagatamyDev ©",
+        "thumbnail": "{image_client}"
     },
     "private_channel_setting": {
         "title": "Управление приватной комнатой",

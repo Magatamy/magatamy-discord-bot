@@ -51,7 +51,7 @@ class LanguageManager:
             language_data = LANGUAGES_DATA.get(LANGUAGES_DEFAULT)
         return language_data
 
-    def get_slash_commands_name(self, slash_command_key: str | list) -> str | list:
+    def get_slash_commands(self, slash_command_key: str | list) -> str | list:
         language_data = self._data.get('slash_commands')
         if isinstance(slash_command_key, list):
             return [language_data.get(key, '') for key in slash_command_key]
