@@ -2,6 +2,7 @@
 /.idea
 .vscode
 config.py
+start.bat
 
 cogs/custom_cogs
 custom_languages
