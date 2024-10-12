@@ -5,4 +5,3 @@ disnake==2.9.2
 htmlwebshot==0.1.2
 pytz==2024.1
 redis==5.0.8
-mcrcon==0.7.0

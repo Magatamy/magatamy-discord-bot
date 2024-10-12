@@ -3,8 +3,3 @@
 .vscode
 config.py
 start.bat
-
-cogs/custom_cogs
-custom_languages
-custom_modules
-custom_utils
