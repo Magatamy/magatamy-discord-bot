@@ -74,7 +74,7 @@ class RedisObject:
         return all_keys
 
     def check_fields(self):
-        redis = sync_redis.Redis(host=REDIS_HOST, port=REDIS_POST)
+        redis = sync_redis.Redis(host=REDIS_HOST, port=REDIS_PORT)
 
         all_attributes = [
             value for key, value in self.__class__.__dict__.items()
