@@ -5,7 +5,7 @@ CATEGORY_NAME = 'subscriptions'
 
 class Subscriptions(RedisObject):
     __user_id_attribute = 'user_id'
-    __timestamp_attribute = 'timestamp'
+    __expiry_ts_attribute = 'expiry_ts'
     __is_forever_attribute = 'is_forever'
 
     def __init__(self, key: int = None):
@@ -22,12 +22,12 @@ class Subscriptions(RedisObject):
         self._data[self.__user_id_attribute] = value
 
     @property
-    def timestamp(self) -> int:
-        return self._data.get(self.__timestamp_attribute)
+    def expiry_ts(self) -> int:
+        return self._data.get(self.__expiry_ts_attribute)
 
-    @timestamp.setter
-    def timestamp(self, value: int):
-        self._data[self.__timestamp_attribute] = value
+    @expiry_ts.setter
+    def expiry_ts(self, value: int):
+        self._data[self.__expiry_ts_attribute] = value
 
     @property
     def is_forever(self) -> bool:
