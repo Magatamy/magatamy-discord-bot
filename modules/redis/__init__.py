@@ -3,4 +3,5 @@ from .categories.private_channels import PrivateChannels
 from .categories.users import Users
 from .categories.users_click_button import UsersClickButton
 from .categories.subscriptions import Subscriptions
+from .categories.weekly_data import WeeklyData
 
