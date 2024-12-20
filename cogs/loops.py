@@ -10,26 +10,26 @@ from config import WEB_API_DOMAIN, WEB_API_SECRET_KEY
 class Loops(commands.Cog):
     def __init__(self, client: commands.AutoShardedInteractionBot):
         self.client = client
-        self.check_subscription.start()
+        # self.check_subscription.start()
         self.push_bot_data.start()
         self.update_weekly_data.start()
 
-    @tasks.loop(minutes=1)
-    async def check_subscription(self):
-        guilds = self.client.guilds
-        for guild in guilds:
-            guild_sub = Subscriptions(key=guild.id)
-
-            if await guild_sub.load():
-                if guild_sub.is_forever:
-                    continue
-
-                now_ts = int(time.time() * 1000)
-
-                if guild_sub.expiry_ts and now_ts < guild_sub.expiry_ts:
-                    continue
-
-            await guild.leave()
+    # @tasks.loop(minutes=1)
+    # async def check_subscription(self):
+    #     guilds = self.client.guilds
+    #     for guild in guilds:
+    #         guild_sub = Subscriptions(key=guild.id)
+    #
+    #         if await guild_sub.load():
+    #             if guild_sub.is_forever:
+    #                 continue
+    #
+    #             now_ts = int(time.time() * 1000)
+    #
+    #             if guild_sub.expiry_ts and now_ts < guild_sub.expiry_ts:
+    #                 continue
+    #
+    #         await guild.leave()
 
     @tasks.loop(minutes=10)
     async def push_bot_data(self):
@@ -100,9 +100,9 @@ class Loops(commands.Cog):
         data.weekly_servers = weekly_servers
         await data.save()
 
-    @check_subscription.before_loop
-    async def before_check_subscription(self):
-        await self.client.wait_until_ready()
+    # @check_subscription.before_loop
+    # async def before_check_subscription(self):
+    #     await self.client.wait_until_ready()
 
     @push_bot_data.before_loop
     async def before_push_bot_data(self):
